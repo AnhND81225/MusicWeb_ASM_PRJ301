@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/Music_Web_Prj"/>
+<Context docBase="Music_Web_Prj" path="/Music_Web_Prj" reloadable="true"/>
