@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Model.DTO;
 
 /**
  *
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Artist")
-public class Artist {
+public class ArtistDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,10 +35,10 @@ public class Artist {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Artist() {
+    public ArtistDTO() {
     }
 
-    public Artist(String name, String bio, String image, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public ArtistDTO(String name, String bio, String image, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.name = name;
         this.bio = bio;
         this.image = image;

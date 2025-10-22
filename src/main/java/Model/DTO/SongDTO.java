@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Model.DTO;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -20,7 +20,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Song")
-public class Song {
+public class SongDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -38,11 +38,11 @@ public class Song {
 
     @ManyToOne
     @JoinColumn(name = "album_id", referencedColumnName = "album_id", nullable = true)
-    private Album album;
+    private AlbumDTO album;
 
     @ManyToOne
     @JoinColumn(name = "genre_id", referencedColumnName = "genre_id", nullable = true)
-    private Genre genre;
+    private GenreDTO genre;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
@@ -50,10 +50,10 @@ public class Song {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    public Song() {
+    public SongDTO() {
     }
 
-    public Song(int songId, String title, String filePath, int duration, Album album, Genre genre, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public SongDTO(int songId, String title, String filePath, int duration, AlbumDTO album, GenreDTO genre, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.songId = songId;
         this.title = title;
         this.filePath = filePath;
@@ -96,19 +96,19 @@ public class Song {
         this.duration = duration;
     }
 
-    public Album getAlbum() {
+    public AlbumDTO getAlbum() {
         return album;
     }
 
-    public void setAlbum(Album album) {
+    public void setAlbum(AlbumDTO album) {
         this.album = album;
     }
 
-    public Genre getGenre() {
+    public GenreDTO getGenre() {
         return genre;
     }
 
-    public void setGenre(Genre genre) {
+    public void setGenre(GenreDTO genre) {
         this.genre = genre;
     }
 

@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Model.DTO;
 
 import java.time.LocalDateTime;
 import javax.persistence.Column;
@@ -21,7 +21,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "Album")
-public class Album {
+public class AlbumDTO {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class Album {
     
     @ManyToOne
     @JoinColumn(name = "artist_id", referencedColumnName = "artist_id", nullable = true)
-    private Artist artist_id;
+    private ArtistDTO artist_id;
     
     @Column(name = "cover_image")
     private String cover_image;
@@ -47,10 +47,10 @@ public class Album {
     @Column(name ="updated_date")
     private LocalDateTime updated_date;
 
-    public Album() {
+    public AlbumDTO() {
     }
 
-    public Album(int albun_id, String name, LocalDateTime release_date, Artist artist_id, String cover_image, LocalDateTime created_date, LocalDateTime updated_date) {
+    public AlbumDTO(int albun_id, String name, LocalDateTime release_date, ArtistDTO artist_id, String cover_image, LocalDateTime created_date, LocalDateTime updated_date) {
         this.albun_id = albun_id;
         this.name = name;
         this.release_date = release_date;
@@ -84,11 +84,11 @@ public class Album {
         this.release_date = release_date;
     }
 
-    public Artist getArtist_id() {
+    public ArtistDTO getArtist_id() {
         return artist_id;
     }
 
-    public void setArtist_id(Artist artist_id) {
+    public void setArtist_id(ArtistDTO artist_id) {
         this.artist_id = artist_id;
     }
 
