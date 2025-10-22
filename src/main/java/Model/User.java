@@ -8,7 +8,7 @@ package Model;
  *
  * @author phant
  */
-public class UserDTO {
-    lll
+public class User {
+    
 }
 
