@@ -2,12 +2,12 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Test;
+package Model.DAO;
 
 /**
  *
- * @author ASUS
+ * @author phant
  */
-public class TestSong {
+public class UserDAO {
     
 }

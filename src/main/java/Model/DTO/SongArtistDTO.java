@@ -2,7 +2,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Model;
+package Model.DTO;
 
 /**
  *
@@ -14,39 +14,39 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "SongArtist")
-public class SongArtist implements Serializable {
+public class SongArtistDTO implements Serializable {
 
     @Id
     @ManyToOne
     @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false)
-    private Song song;
+    private SongDTO song;
 
     @Id
     @ManyToOne
     @JoinColumn(name = "artist_id", referencedColumnName = "artist_id", nullable = false)
-    private Artist artist;
+    private ArtistDTO artist;
 
-    public SongArtist() {
+    public SongArtistDTO() {
     }
 
-    public SongArtist(Song song, Artist artist) {
+    public SongArtistDTO(SongDTO song, ArtistDTO artist) {
         this.song = song;
         this.artist = artist;
     }
 
-    public Song getSong() {
+    public SongDTO getSong() {
         return song;
     }
 
-    public void setSong(Song song) {
+    public void setSong(SongDTO song) {
         this.song = song;
     }
 
-    public Artist getArtist() {
+    public ArtistDTO getArtist() {
         return artist;
     }
 
-    public void setArtist(Artist artist) {
+    public void setArtist(ArtistDTO artist) {
         this.artist = artist;
     }
 }
