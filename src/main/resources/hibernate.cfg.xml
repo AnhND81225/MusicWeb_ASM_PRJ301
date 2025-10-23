@@ -32,4 +32,3 @@
         <!-- <mapping class="your.package.Patient"/> -->
     </session-factory>
 </hibernate-configuration>
-

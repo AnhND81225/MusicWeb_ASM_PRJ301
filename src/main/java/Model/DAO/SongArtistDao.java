@@ -6,8 +6,8 @@ package Model.DAO;
 
 /**
  *
- * @author phant
+ * @author ASUS
  */
-public class UserDAO {
+public class SongArtistDao {
     
 }
