@@ -2,26 +2,26 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package Dao;
+package Model.DAO;
 
 import java.util.List;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
-import model.Dao.SongDTO;
+import Model.DTO.SongDTO;
 import Util.HibernateUtil;
 
 public class SongDao {
-    public List<Song> selectAll() {
+    public List<SongDTO> selectAll() {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        return session.createQuery("FROM Song", Song.class).list();
+        return session.createQuery("FROM Song", SongDTO.class).list();
     }
 
-    public Song selectById(int id) {
+    public SongDTO selectById(int id) {
         Session session = HibernateUtil.getSessionFactory().openSession();
-        return session.get(Song.class, id);
+        return session.get(SongDTO.class, id);
     }
 
-    public boolean insert(Song song) {
+    public boolean insert(SongDTO song) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
@@ -35,7 +35,7 @@ public class SongDao {
         }
     }
 
-    public boolean delete(Song song) {
+    public boolean delete(SongDTO song) {
         Transaction tx = null;
         try (Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
