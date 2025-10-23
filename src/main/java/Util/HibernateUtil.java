@@ -5,6 +5,7 @@
 package Util;
 
 /* day la class de quản lý SessionFactory*/
+import static jdk.nashorn.internal.objects.NativeError.printStackTrace;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
@@ -20,7 +21,7 @@ public class HibernateUtil {
         try {
             return new Configuration().configure().buildSessionFactory();
         } catch (Exception e) {
-            System.out.println("Loi khong the tao SessionFactory");
+            printStackTrace(e);
             return null;
         }
     }
