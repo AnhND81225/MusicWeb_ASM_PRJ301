@@ -1,84 +1,76 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DAO;
 
 import Model.DTO.DownloadHistoryDTO;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class DownloadHistoryDAO {
 
-    private EntityManagerFactory emf;
+    private SessionFactory factory;
 
-    public DownloadHistoryDAO(EntityManagerFactory emf) {
-        this.emf = emf;
+    public DownloadHistoryDAO(SessionFactory factory) {
+        this.factory = factory;
     }
 
     public int insert(DownloadHistoryDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.persist(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.save(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int update(DownloadHistoryDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.merge(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.update(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int delete(DownloadHistoryDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            DownloadHistoryDTO a = em.find(DownloadHistoryDTO.class, x.getDownloadId());
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            DownloadHistoryDTO a = session.get(DownloadHistoryDTO.class, x.getDownloadId());
             if (a != null) {
-                em.getTransaction().begin();
-                em.remove(a);
-                em.getTransaction().commit();
+                session.delete(a);
                 kq = 1;
             }
-        } finally {
-            em.close();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public List<DownloadHistoryDTO> selectAll() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            TypedQuery<DownloadHistoryDTO> query = em.createQuery("SELECT d FROM DownloadHistoryDTO d", DownloadHistoryDTO.class);
-            return query.getResultList();
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.createQuery("FROM DownloadHistoryDTO", DownloadHistoryDTO.class).list();
         }
     }
 
     public DownloadHistoryDTO selectById(Integer id) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.find(DownloadHistoryDTO.class, id);
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.get(DownloadHistoryDTO.class, id);
         }
     }
 }

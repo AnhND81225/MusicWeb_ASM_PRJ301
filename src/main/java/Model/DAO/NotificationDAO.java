@@ -1,85 +1,76 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DAO;
 
 import Model.DTO.NotificationDTO;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class NotificationDAO {
 
-    private EntityManagerFactory emf;
+    private SessionFactory factory;
 
-    public NotificationDAO(EntityManagerFactory emf) {
-        this.emf = emf;
+    public NotificationDAO(SessionFactory factory) {
+        this.factory = factory;
     }
 
     public int insert(NotificationDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.persist(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.save(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int update(NotificationDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.merge(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.update(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int delete(NotificationDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            NotificationDTO a = em.find(NotificationDTO.class, x.getNotificationId());
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            NotificationDTO a = session.get(NotificationDTO.class, x.getNotificationId());
             if (a != null) {
-                em.getTransaction().begin();
-                em.remove(a);
-                em.getTransaction().commit();
+                session.delete(a);
                 kq = 1;
             }
-        } finally {
-            em.close();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public List<NotificationDTO> selectAll() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            TypedQuery<NotificationDTO> query = em.createQuery("SELECT n FROM NotificationDTO n", NotificationDTO.class);
-            return query.getResultList();
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.createQuery("FROM NotificationDTO", NotificationDTO.class).list();
         }
     }
 
     public NotificationDTO selectById(Integer id) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.find(NotificationDTO.class, id);
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.get(NotificationDTO.class, id);
         }
     }
 }
-

@@ -1,85 +1,76 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DAO;
 
 import Model.DTO.CommentDTO;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class CommentDAO {
 
-    private EntityManagerFactory emf;
+    private SessionFactory factory;
 
-    public CommentDAO(EntityManagerFactory emf) {
-        this.emf = emf;
+    public CommentDAO(SessionFactory factory) {
+        this.factory = factory;
     }
 
     public int insert(CommentDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.persist(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.save(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int update(CommentDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.merge(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.update(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int delete(CommentDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            CommentDTO a = em.find(CommentDTO.class, x.getCommentId());
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            CommentDTO a = session.get(CommentDTO.class, x.getCommentId());
             if (a != null) {
-                em.getTransaction().begin();
-                em.remove(a);
-                em.getTransaction().commit();
+                session.delete(a);
                 kq = 1;
             }
-        } finally {
-            em.close();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public List<CommentDTO> selectAll() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            TypedQuery<CommentDTO> query = em.createQuery("SELECT c FROM CommentDTO c", CommentDTO.class);
-            return query.getResultList();
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.createQuery("FROM CommentDTO", CommentDTO.class).list();
         }
     }
 
     public CommentDTO selectById(Integer id) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.find(CommentDTO.class, id);
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.get(CommentDTO.class, id);
         }
     }
 }
-

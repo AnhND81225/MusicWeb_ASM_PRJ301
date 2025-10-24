@@ -1,85 +1,76 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DAO;
 
 import Model.DTO.HistoryDTO;
 import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.TypedQuery;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
 
 public class HistoryDAO {
 
-    private EntityManagerFactory emf;
+    private SessionFactory factory;
 
-    public HistoryDAO(EntityManagerFactory emf) {
-        this.emf = emf;
+    public HistoryDAO(SessionFactory factory) {
+        this.factory = factory;
     }
 
     public int insert(HistoryDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.persist(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.save(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int update(HistoryDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            em.getTransaction().begin();
-            em.merge(x);
-            em.getTransaction().commit();
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            session.update(x);
+            tx.commit();
             kq = 1;
-        } finally {
-            em.close();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public int delete(HistoryDTO x) {
-        EntityManager em = emf.createEntityManager();
         int kq = 0;
-        try {
-            HistoryDTO a = em.find(HistoryDTO.class, x.getHistoryId());
+        Transaction tx = null;
+        try (Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            HistoryDTO a = session.get(HistoryDTO.class, x.getHistoryId());
             if (a != null) {
-                em.getTransaction().begin();
-                em.remove(a);
-                em.getTransaction().commit();
+                session.delete(a);
                 kq = 1;
             }
-        } finally {
-            em.close();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx != null) tx.rollback();
+            e.printStackTrace();
         }
         return kq;
     }
 
     public List<HistoryDTO> selectAll() {
-        EntityManager em = emf.createEntityManager();
-        try {
-            TypedQuery<HistoryDTO> query = em.createQuery("SELECT h FROM HistoryDTO h", HistoryDTO.class);
-            return query.getResultList();
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.createQuery("FROM HistoryDTO", HistoryDTO.class).list();
         }
     }
 
     public HistoryDTO selectById(Integer id) {
-        EntityManager em = emf.createEntityManager();
-        try {
-            return em.find(HistoryDTO.class, id);
-        } finally {
-            em.close();
+        try (Session session = factory.openSession()) {
+            return session.get(HistoryDTO.class, id);
         }
     }
 }
-
