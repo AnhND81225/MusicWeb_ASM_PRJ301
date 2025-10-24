@@ -42,4 +42,66 @@ public class UserSubscriptionDTO {
     
     @Column(name = "is_active", insertable = false, updatable = false)
     private Boolean isActive;
+
+    public UserSubscriptionDTO() {
+    }
+
+    public UserSubscriptionDTO(Integer subscriptionId, UserDTO user, SubscriptionDTO subscription, LocalDateTime startDate, LocalDateTime endDate, Boolean isActive) {
+        this.subscriptionId = subscriptionId;
+        this.user = user;
+        this.subscription = subscription;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.isActive = isActive;
+    }
+
+    public Integer getSubscriptionId() {
+        return subscriptionId;
+    }
+
+    public void setSubscriptionId(Integer subscriptionId) {
+        this.subscriptionId = subscriptionId;
+    }
+
+    public UserDTO getUser() {
+        return user;
+    }
+
+    public void setUser(UserDTO user) {
+        this.user = user;
+    }
+
+    public SubscriptionDTO getSubscription() {
+        return subscription;
+    }
+
+    public void setSubscription(SubscriptionDTO subscription) {
+        this.subscription = subscription;
+    }
+
+    public LocalDateTime getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDateTime getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public Boolean getIsActive() {
+        return isActive;
+    }
+
+    public void setIsActive(Boolean isActive) {
+        this.isActive = isActive;
+    }
+    
+    
 }
