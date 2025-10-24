@@ -4,13 +4,14 @@
  */
 package Model.DTO;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  *
  * @author phant
  */
-public class PlaylistSongID {
+public class PlaylistSongID implements Serializable{
     private Integer playlistId;
     private Integer songId;
 
