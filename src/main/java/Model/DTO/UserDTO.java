@@ -16,35 +16,36 @@ import javax.persistence.Table;
  *
  * @author phant
  */
-@Entity (name = "tblUser")
-@Table (name = "tblUser")
+@Entity(name = "tblUser")
+@Table(name = "tblUser")
 public class UserDTO {
-    
+
     @Id
-    @Column (name = "user_id")
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
-    private int userID;
-    
-    @Column (name = "username" ,nullable = false, unique = true)
+    @Column(name = "user_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer userID;
+
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
-    
-    @Column (name = "password" ,nullable = false)
+
+    @Column(name = "password", nullable = false)
     private String password;
-    
-    @Column (name = "email" ,nullable = false, unique = true)
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
-    
-    @Column (name = "role" ,nullable = false, unique = true)
+
+    @Column(name = "role", nullable = false, unique = true)
     private String role;
+
+    @Column(name = "create_time")
+    private LocalDateTime createdAt = LocalDateTime.now();
+    ;
     
-    @Column (name = "create_time")
-    private LocalDateTime createdAt =  LocalDateTime.now();;
     
-    
-    @Column (name = "update_time")
+    @Column(name = "update_time")
     private LocalDateTime updatedAt = null;
-    
-    @Column (name = "hidden")
+
+    @Column(name = "hidden")
     private boolean hidden = true;
 
     public UserDTO() {
@@ -58,11 +59,11 @@ public class UserDTO {
         this.role = role;
     }
 
-    public int getUserID() {
+    public Integer getUserID() {
         return userID;
     }
 
-    public void setUserID(int userID) {
+    public void setUserID(Integer userID) {
         this.userID = userID;
     }
 
@@ -121,7 +122,5 @@ public class UserDTO {
     public void setHidden(boolean hidden) {
         this.hidden = hidden;
     }
-    
-    
-}
 
+}
