@@ -25,23 +25,26 @@ public class UserSubscriptionDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer subscriptionId;
-    
+
     @ManyToOne
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = true)
     private UserDTO user;
-    
+
     @ManyToOne
     @JoinColumn(name = "plan_id", referencedColumnName = "plan_id", nullable = false)
     private SubscriptionDTO subscription;
-    
+
     @Column(name = "start_date", insertable = false, updatable = false)
     private LocalDateTime startDate;
-    
+
     @Column(name = "end_date")
     private LocalDateTime endDate;
-    
+
     @Column(name = "is_active", insertable = false, updatable = false)
     private Boolean isActive;
+
+    @Column(name = "is_deleted")
+    private Boolean isDeleted = false;
 
     public UserSubscriptionDTO() {
     }
@@ -53,6 +56,14 @@ public class UserSubscriptionDTO {
         this.startDate = startDate;
         this.endDate = endDate;
         this.isActive = isActive;
+    }
+
+    public Boolean getIsDeleted() {
+        return isDeleted;
+    }
+
+    public void setIsDeleted(Boolean isDeleted) {
+        this.isDeleted = isDeleted;
     }
 
     public Integer getSubscriptionId() {
@@ -102,6 +113,5 @@ public class UserSubscriptionDTO {
     public void setIsActive(Boolean isActive) {
         this.isActive = isActive;
     }
-    
-    
+
 }

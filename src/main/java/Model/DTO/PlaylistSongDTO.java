@@ -42,4 +42,47 @@ public class PlaylistSongDTO {
 
     @Column(name = "position")
     private Integer position;
+
+    public PlaylistSongDTO() {
+    }
+
+    public PlaylistSongDTO(PlaylistSongID id, PlaylistDTO playlist, SongDTO song, Integer position) {
+        this.id = id;
+        this.playlist = playlist;
+        this.song = song;
+        this.position = position;
+    }
+
+    public PlaylistSongID getId() {
+        return id;
+    }
+
+    public void setId(PlaylistSongID id) {
+        this.id = id;
+    }
+
+    public PlaylistDTO getPlaylist() {
+        return playlist;
+    }
+
+    public void setPlaylist(PlaylistDTO playlist) {
+        this.playlist = playlist;
+    }
+
+    public SongDTO getSong() {
+        return song;
+    }
+
+    public void setSong(SongDTO song) {
+        this.song = song;
+    }
+
+    public Integer getPosition() {
+        return position;
+    }
+
+    public void setPosition(Integer position) {
+        this.position = position;
+    }
+    
 }

@@ -34,12 +34,12 @@ public class UserDTO {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "role", nullable = false, unique = true)
+    @Column(name = "role", nullable = false)
     private String role;
 
     @Column(name = "create_time")
     private LocalDateTime createdAt = LocalDateTime.now();
-    ;
+    
     
     
     @Column(name = "update_time")

@@ -40,5 +40,29 @@ public class PlaylistSongID implements Serializable{
         }
         return Objects.equals(this.songId, other.songId);
     }
+
+    public PlaylistSongID() {
+    }
+
+    public PlaylistSongID(Integer playlistId, Integer songId) {
+        this.playlistId = playlistId;
+        this.songId = songId;
+    }
+
+    public Integer getPlaylistId() {
+        return playlistId;
+    }
+
+    public void setPlaylistId(Integer playlistId) {
+        this.playlistId = playlistId;
+    }
+
+    public Integer getSongId() {
+        return songId;
+    }
+
+    public void setSongId(Integer songId) {
+        this.songId = songId;
+    }
     
 }
