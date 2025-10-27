@@ -1,24 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DTO;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
-/**
- * /**
- *
- * @author ASUS
- */
 @Entity
 @Table(name = "Album")
 public class AlbumDTO {
@@ -26,46 +10,55 @@ public class AlbumDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "album_id")
-    private int albun_id;
-    
+    private int albumId;
+
     @Column(name = "title", nullable = false, length = 150)
     private String name;
-    
-    @Column(name ="release_date")
-    private LocalDateTime release_date;
-    
+
+    @Column(name = "release_date")
+    private LocalDateTime releaseDate;
+
     @ManyToOne
     @JoinColumn(name = "artist_id", referencedColumnName = "artist_id", nullable = true)
-    private ArtistDTO artist_id;
-    
-    @Column(name = "cover_image")
-    private String cover_image;
-    
-    @Column(name ="created_date")
-    private LocalDateTime created_date;
-    
-    @Column(name ="updated_date")
-    private LocalDateTime updated_date;
+    private ArtistDTO artist;
 
-    public AlbumDTO() {
-    }
+    @ManyToOne
+    @JoinColumn(name = "genre_id", referencedColumnName = "genre_id", nullable = true)
+    private GenreDTO genre;
 
-    public AlbumDTO(int albun_id, String name, LocalDateTime release_date, ArtistDTO artist_id, String cover_image, LocalDateTime created_date, LocalDateTime updated_date) {
-        this.albun_id = albun_id;
+    @Column(name = "cover_image", length = 255)
+    private String coverImage;
+
+    @Column(name = "created_date")
+    private LocalDateTime createdDate;
+
+    @Column(name = "updated_date")
+    private LocalDateTime updatedDate;
+
+    @Column(name = "is_hidden")
+    private boolean isHidden = false;
+
+    public AlbumDTO() {}
+
+      public AlbumDTO(int albumId, String name, LocalDateTime releaseDate, ArtistDTO artist, GenreDTO genre,
+                    String coverImage, LocalDateTime createdDate, LocalDateTime updatedDate, boolean isHidden) {
+        this.albumId = albumId;
         this.name = name;
-        this.release_date = release_date;
-        this.artist_id = artist_id;
-        this.cover_image = cover_image;
-        this.created_date = created_date;
-        this.updated_date = updated_date;
+        this.releaseDate = releaseDate;
+        this.artist = artist;
+        this.genre = genre;
+        this.coverImage = coverImage;
+        this.createdDate = createdDate;
+        this.updatedDate = updatedDate;
+        this.isHidden = isHidden;
     }
 
-    public int getAlbun_id() {
-        return albun_id;
+    public int getAlbumId() {
+        return albumId;
     }
 
-    public void setAlbun_id(int albun_id) {
-        this.albun_id = albun_id;
+    public void setAlbumId(int albumId) {
+        this.albumId = albumId;
     }
 
     public String getName() {
@@ -76,44 +69,59 @@ public class AlbumDTO {
         this.name = name;
     }
 
-    public LocalDateTime getRelease_date() {
-        return release_date;
+    public LocalDateTime getReleaseDate() {
+        return releaseDate;
     }
 
-    public void setRelease_date(LocalDateTime release_date) {
-        this.release_date = release_date;
+    public void setReleaseDate(LocalDateTime releaseDate) {
+        this.releaseDate = releaseDate;
     }
 
-    public ArtistDTO getArtist_id() {
-        return artist_id;
+    public ArtistDTO getArtist() {
+        return artist;
     }
 
-    public void setArtist_id(ArtistDTO artist_id) {
-        this.artist_id = artist_id;
+    public void setArtist(ArtistDTO artist) {
+        this.artist = artist;
     }
 
-    public String getCover_image() {
-        return cover_image;
+    public GenreDTO getGenre() {
+        return genre;
     }
 
-    public void setCover_image(String cover_image) {
-        this.cover_image = cover_image;
+    public void setGenre(GenreDTO genre) {
+        this.genre = genre;
     }
 
-    public LocalDateTime getCreated_date() {
-        return created_date;
+    public String getCoverImage() {
+        return coverImage;
     }
 
-    public void setCreated_date(LocalDateTime created_date) {
-        this.created_date = created_date;
+    public void setCoverImage(String coverImage) {
+        this.coverImage = coverImage;
     }
 
-    public LocalDateTime getUpdated_date() {
-        return updated_date;
+    public LocalDateTime getCreatedDate() {
+        return createdDate;
     }
 
-    public void setUpdated_date(LocalDateTime updated_date) {
-        this.updated_date = updated_date;
+    public void setCreatedDate(LocalDateTime createdDate) {
+        this.createdDate = createdDate;
     }
 
+    public LocalDateTime getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(LocalDateTime updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
 }
