@@ -5,6 +5,7 @@
 package Model.DTO;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import javax.persistence.*;
 
 @Entity
@@ -18,6 +19,12 @@ public class SongLikesDTO implements Serializable {
     @Column(name = "like_id")
     private Integer likeId; // INT IDENTITY(1,1)
 
+    @Column(name = "liked_at", insertable = false, updatable = false)
+    private LocalDateTime likedAt; // DATETIME DEFAULT GETDATE()
+
+    @Column(name = "is_hidden", nullable = false)
+    private Boolean isHidden = false; // Xóa mềm (ẩn like thay vì xóa record)
+
     // Khóa ngoại: Many-to-One tới Users
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
@@ -27,24 +34,41 @@ public class SongLikesDTO implements Serializable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false)
     private SongDTO song;
+    
+    
 
     // Constructors
     public SongLikesDTO() {}
-    
+
     public SongLikesDTO(UserDTO user, SongDTO song) {
         this.user = user;
         this.song = song;
+        this.isHidden = false;
     }
-    
 
-    
-
+    // Getters & Setters
     public Integer getLikeId() {
         return likeId;
     }
 
     public void setLikeId(Integer likeId) {
         this.likeId = likeId;
+    }
+
+    public LocalDateTime getLikedAt() {
+        return likedAt;
+    }
+
+    public void setLikedAt(LocalDateTime likedAt) {
+        this.likedAt = likedAt;
+    }
+
+    public Boolean getIsHidden() {
+        return isHidden;
+    }
+
+    public void setIsHidden(Boolean isHidden) {
+        this.isHidden = isHidden;
     }
 
     public UserDTO getUser() {

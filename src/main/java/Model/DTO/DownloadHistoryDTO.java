@@ -1,13 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DTO;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
- 
+
 @Entity
 @Table(name = "DownloadHistory")
 public class DownloadHistoryDTO implements Serializable {
@@ -15,12 +11,12 @@ public class DownloadHistoryDTO implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "download_id")
-    private Integer downloadId; // INT IDENTITY(1,1)
+    private Integer downloadId;
 
-    @Column(name = "downloaded_at", insertable = false, updatable = false)
-    private LocalDateTime downloadedAt; // DATETIME DEFAULT GETDATE()
+    @Column(name = "downloaded_at", insertable = false, updatable = false, columnDefinition = "DATETIME DEFAULT GETDATE()")
+    private LocalDateTime downloadedAt;
 
-    // Khóa ngoại: Many-to-One tới Users
+    // Khóa ngoại: Many-to-One tới tblUser
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private UserDTO user;
@@ -30,7 +26,9 @@ public class DownloadHistoryDTO implements Serializable {
     @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false)
     private SongDTO song;
 
-    // Constructors
+    @Column(name = "is_hidden", nullable = false)
+    private boolean isHidden = false;
+
     public DownloadHistoryDTO() {}
 
     public DownloadHistoryDTO(UserDTO user, SongDTO song) {
@@ -70,5 +68,11 @@ public class DownloadHistoryDTO implements Serializable {
         this.song = song;
     }
 
-    
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
 }

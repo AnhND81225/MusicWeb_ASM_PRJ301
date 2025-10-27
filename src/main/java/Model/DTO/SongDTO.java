@@ -50,10 +50,12 @@ public class SongDTO {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_hidden")
+    private boolean isHidden = false;
+
     public SongDTO() {
     }
-
-    public SongDTO(int songId, String title, String filePath, int duration, AlbumDTO album, GenreDTO genre, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    public SongDTO(int songId, String title, String filePath, int duration, AlbumDTO album, GenreDTO genre, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isHidden) {
         this.songId = songId;
         this.title = title;
         this.filePath = filePath;
@@ -62,6 +64,7 @@ public class SongDTO {
         this.genre = genre;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isHidden = isHidden;
     }
 
     public int getSongId() {
@@ -128,4 +131,11 @@ public class SongDTO {
         this.updatedAt = updatedAt;
     }
 
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
 }

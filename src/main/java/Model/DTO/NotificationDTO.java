@@ -17,23 +17,26 @@ public class NotificationDTO implements Serializable {
     @Column(name = "notification_id")
     private Integer notificationId; // INT IDENTITY(1,1)
 
-    @Column(name = "message", nullable = false, length = 255)
+    @Column(name = "message", nullable = false, columnDefinition = "NVARCHAR(255)")
     private String message;
-    
+
     @Column(name = "is_read", nullable = false)
     private Boolean isRead = false; // BIT DEFAULT 0
 
+    @Column(name = "is_hidden", nullable = false)
+    private Boolean isHidden = false; // Xóa mềm (ẩn thông báo)
+
     @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private LocalDateTime createdAt; // DATETIME DEFAULT GETDATE()
 
     // Khóa ngoại: Many-to-One tới Users
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
     private UserDTO user;
 
-    // Khóa ngoại: Song (cho phép NULL)
+    // Khóa ngoại: Song (có thể null)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = true) // Cho phép NULL
+    @JoinColumn(name = "song_id", referencedColumnName = "song_id")
     private SongDTO song;
 
     // Constructors
@@ -44,8 +47,10 @@ public class NotificationDTO implements Serializable {
         this.user = user;
         this.song = song;
         this.isRead = false;
+        this.isHidden = false;
     }
 
+    // Getters & Setters
     public Integer getNotificationId() {
         return notificationId;
     }
@@ -68,6 +73,14 @@ public class NotificationDTO implements Serializable {
 
     public void setIsRead(Boolean isRead) {
         this.isRead = isRead;
+    }
+
+    public Boolean getIsHidden() {
+        return isHidden;
+    }
+
+    public void setIsHidden(Boolean isHidden) {
+        this.isHidden = isHidden;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -93,6 +106,4 @@ public class NotificationDTO implements Serializable {
     public void setSong(SongDTO song) {
         this.song = song;
     }
-
-    
 }

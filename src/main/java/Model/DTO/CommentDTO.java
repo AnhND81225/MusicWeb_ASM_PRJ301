@@ -4,11 +4,7 @@
  */
 package Model.DTO;
 
-/**
- *
- * @author Villain
- */
- import java.io.Serializable;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
 
@@ -19,36 +15,43 @@ public class CommentDTO implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "comment_id")
-    private Integer commentId; // INT IDENTITY(1,1)
+    private Integer commentId;
 
-    @Column(name = "content", columnDefinition = "NVARCHAR(MAX)", nullable = false)
+    @Column(name = "content", nullable = false, columnDefinition = "NVARCHAR(MAX)")
     private String content;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
-    private LocalDateTime createdAt; // DATETIME DEFAULT GETDATE()
+    @Column(name = "created_at", columnDefinition = "DATETIME DEFAULT GETDATE()", insertable = false, updatable = false)
+    private LocalDateTime createdAt;
 
-    // Khóa ngoại: Many-to-One tới Users
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
-    private UserDTO user; // Bạn cần có class Users
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserDTO user;
 
-    // Khóa ngoại: Many-to-One tới Song
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "song_id", referencedColumnName = "song_id", nullable = false)
-    private SongDTO song; // Bạn cần có class Song
+    @JoinColumn(name = "song_id", nullable = false)
+    private SongDTO song;
 
-    // Constructors
-    public CommentDTO() {}
-    
+    @Column(name = "is_hidden", nullable = false)
+    private boolean isHidden = false;
+
+    // ===== Constructors =====
+    public CommentDTO() {
+    }
+
     public CommentDTO(String content, UserDTO user, SongDTO song) {
         this.content = content;
         this.user = user;
         this.song = song;
     }
 
-    // Getters và Setters (Bạn nên tự thêm vào cho đầy đủ, tôi chỉ liệt kê một vài ví dụ)
-    public Integer getCommentId() { return commentId; }
-    public void setCommentId(Integer commentId) { this.commentId = commentId; }
+    // ===== Getters & Setters =====
+    public Integer getCommentId() {
+        return commentId;
+    }
+
+    public void setCommentId(Integer commentId) {
+        this.commentId = commentId;
+    }
 
     public String getContent() {
         return content;
@@ -81,6 +84,12 @@ public class CommentDTO implements Serializable {
     public void setSong(SongDTO song) {
         this.song = song;
     }
-    
-}
 
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
+} 

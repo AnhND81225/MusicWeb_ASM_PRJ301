@@ -2,7 +2,6 @@ package Util;
 
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import org.hibernate.HibernateException;
 
 public class HibernateUtil {
 
@@ -10,11 +9,10 @@ public class HibernateUtil {
 
     private static SessionFactory buildSessionFactory() {
         try {
-            // Tạo đối tượng SessionFactory từ file cấu hình hibernate.cfg.xml
             return new Configuration().configure().buildSessionFactory();
-        } catch (HibernateException ex) {
-            System.err.println("Khởi tạo SessionFactory thất bại: " + ex);
-            throw new ExceptionInInitializerError(ex);
+        } catch (Exception e) {
+            e.printStackTrace(); // In lỗi ra console
+            throw new ExceptionInInitializerError(e); // Ném lỗi để dừng chương trình
         }
     }
 
@@ -23,8 +21,6 @@ public class HibernateUtil {
     }
 
     public static void shutdown() {
-        if (sessionFactory != null) {
-            sessionFactory.close();
-        }
+        getSessionFactory().close();
     }
 }

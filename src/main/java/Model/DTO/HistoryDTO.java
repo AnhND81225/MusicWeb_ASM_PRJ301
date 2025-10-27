@@ -3,6 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package Model.DTO;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import javax.persistence.*;
@@ -19,6 +20,10 @@ public class HistoryDTO implements Serializable {
     @Column(name = "listened_at", insertable = false, updatable = false)
     private LocalDateTime listenedAt; // DATETIME DEFAULT GETDATE()
 
+    // Cờ xóa mềm (ẩn lịch sử nghe nhạc thay vì xóa thật)
+    @Column(name = "is_hidden", nullable = false)
+    private boolean isHidden = false;
+
     // Khóa ngoại: Many-to-One tới Users
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", referencedColumnName = "user_id", nullable = false)
@@ -31,7 +36,7 @@ public class HistoryDTO implements Serializable {
 
     // Constructors
     public HistoryDTO() {}
-    
+
     public HistoryDTO(UserDTO user, SongDTO song) {
         this.user = user;
         this.song = song;
@@ -53,6 +58,14 @@ public class HistoryDTO implements Serializable {
         this.listenedAt = listenedAt;
     }
 
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
+    }
+
     public UserDTO getUser() {
         return user;
     }
@@ -68,6 +81,4 @@ public class HistoryDTO implements Serializable {
     public void setSong(SongDTO song) {
         this.song = song;
     }
-
-    
 }

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
     "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
 <hibernate-configuration>
     <session-factory>
         <!-- Database connection settings -->
         <property name="hibernate.connection.driver_class">com.microsoft.sqlserver.jdbc.SQLServerDriver</property>
         <!-- Thay YourDatabaseName bằng tên database thực tế của bạn -->
-        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=Web_Music;encrypt=false</property>
+        <property name="hibernate.connection.url">jdbc:sqlserver://localhost:1433;databaseName=music_web_asm;encrypt=false</property>
         <property name="hibernate.connection.username">sa</property>
         <property name="hibernate.connection.password">12345</property>
 
@@ -24,11 +24,17 @@
 
         <!-- Mapping entity classes: chỉnh lại package.class tương ứng project của bạn -->
         <!-- Ví dụ: <mapping class="your.package.Doctor"/> -->
-        <mapping class="Model.Song"/> 
-        <mapping class="Model.Album"/>
-        <mapping class="Model.Genre"/>
-        <mapping class="Model.SongArtist"/>
-        <mapping class="Model.Artist"/>
+        <mapping class="Model.DTO.DownloadHistoryDTO"/> 
+        <mapping class="Model.DTO.CommentDTO"/> 
+        <mapping class="Model.DTO.HistoryDTO"/> 
+        <mapping class="Model.DTO.SongLikesDTO"/> 
+        <mapping class="Model.DTO.NotificationDTO"/> 
+        <mapping class="Model.DTO.SongDTO"/> 
+        <mapping class="Model.DTO.AlbumDTO"/>
+        <mapping class="Model.DTO.GenreDTO"/>
+        <mapping class="Model.DTO.SongArtistDTO"/>
+        <mapping class="Model.DTO.ArtistDTO"/>
+        <mapping class="Model.DTO.UserDTO"/>
         <!-- <mapping class="your.package.Patient"/> -->
     </session-factory>
 </hibernate-configuration>
