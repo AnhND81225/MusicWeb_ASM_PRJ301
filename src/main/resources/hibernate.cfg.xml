@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE hibernate-configuration PUBLIC
     "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
-    "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
-
+    "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 <hibernate-configuration>
     <session-factory>
         <!-- Database connection settings -->
@@ -24,11 +23,7 @@
 
         <!-- Mapping entity classes: chỉnh lại package.class tương ứng project của bạn -->
         <!-- Ví dụ: <mapping class="your.package.Doctor"/> -->
-        <mapping class="Model.Song"/> 
-        <mapping class="Model.Album"/>
-        <mapping class="Model.Genre"/>
-        <mapping class="Model.SongArtist"/>
-        <mapping class="Model.Artist"/>
+        <mapping class="Model.DTO.UserDTO"/>
         <!-- <mapping class="your.package.Patient"/> -->
     </session-factory>
 </hibernate-configuration>

@@ -34,12 +34,12 @@ public class UserDTO {
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "role", nullable = false, unique = true)
+    @Column(name = "role", nullable = false)
     private String role;
 
     @Column(name = "create_time")
     private LocalDateTime createdAt = LocalDateTime.now();
-    ;
+    
     
     
     @Column(name = "update_time")
@@ -51,7 +51,7 @@ public class UserDTO {
     public UserDTO() {
     }
 
-    public UserDTO(int userID, String username, String password, String email, String role) {
+    public UserDTO(String username, String password, String email, String role) {
         this.userID = userID;
         this.username = username;
         this.password = password;

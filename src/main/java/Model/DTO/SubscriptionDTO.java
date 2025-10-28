@@ -16,26 +16,29 @@ import javax.persistence.Table;
  *
  * @author phant
  */
-@Entity (name = "tblSubscription")
-@Table (name = "tblSubscription")
+@Entity(name = "tblSubscription")
+@Table(name = "tblSubscription")
 public class SubscriptionDTO {
-    
+
     @Id
-    @Column (name = "plan_id")
-    @GeneratedValue (strategy = GenerationType.IDENTITY)
+    @Column(name = "plan_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer planID;
-    
-    @Column (name = "name_subscription" ,nullable = false)
+
+    @Column(name = "name_subscription", nullable = false)
     private String nameSubscription;
-    
-    @Column (name = "price" ,nullable = false)
+
+    @Column(name = "price", nullable = false)
     private Integer price;
-    
-    @Column (name = "duration_in_days" ,nullable = false)
+
+    @Column(name = "duration_in_days", nullable = false)
     private Integer durationDay;
-    
-    @Column (name = "description")
+
+    @Column(name = "description")
     private String description;
+
+    @Column(name = "hidden")
+    private Boolean hidden = false;
 
     public SubscriptionDTO() {
     }
@@ -87,6 +90,12 @@ public class SubscriptionDTO {
     public void setDescription(String description) {
         this.description = description;
     }
-    
-    
+
+    public Boolean getHidden() {
+        return hidden;
+    }
+
+    public void setHidden(Boolean hidden) {
+        this.hidden = hidden;
+    }
 }
