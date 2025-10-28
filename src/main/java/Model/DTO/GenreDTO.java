@@ -29,14 +29,12 @@ public class GenreDTO {
     @Column(name = "name", nullable = false, unique = true, length = 100)
     private String name;
 
-    // Constructors
     public GenreDTO() {}
 
     public GenreDTO(String name) {
         this.name = name;
     }
 
-    // Getters and Setters
     public int getGenreId() {
         return genreId;
     }

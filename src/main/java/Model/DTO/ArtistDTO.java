@@ -35,17 +35,25 @@ public class ArtistDTO {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(name = "is_hidden")
+    private boolean isHidden = false;
+
+    // Constructor không tham số
     public ArtistDTO() {
     }
 
-    public ArtistDTO(String name, String bio, String image, LocalDateTime createdAt, LocalDateTime updatedAt) {
+    // Constructor đầy đủ
+    public ArtistDTO(int artistId, String name, String bio, String image, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isHidden) {
+        this.artistId = artistId;
         this.name = name;
         this.bio = bio;
         this.image = image;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
+        this.isHidden = isHidden;
     }
 
+    // Getter và Setter
     public int getArtistId() {
         return artistId;
     }
@@ -92,5 +100,13 @@ public class ArtistDTO {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public boolean isHidden() {
+        return isHidden;
+    }
+
+    public void setHidden(boolean hidden) {
+        isHidden = hidden;
     }
 }
