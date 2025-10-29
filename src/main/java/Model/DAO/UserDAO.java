@@ -103,7 +103,6 @@ public class UserDAO {
                 "FROM tblUser WHERE username = :username", UserDTO.class);
             query.setParameter("username", username);
             user = query.uniqueResult();
-            System.out.println("load success");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -131,19 +130,17 @@ public class UserDAO {
         }
         return users;
     }
-
-    // Kiểm tra đăng nhập (chỉ user chưa bị ẩn)
-    public UserDTO login(String username, String password) {
-        UserDTO user = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            Query<UserDTO> query = session.createQuery(
-                "FROM tblUser WHERE username = :username AND password = :password AND hidden = false", UserDTO.class);
+    
+    public boolean isUserExist(String username){
+        try (Session session = HibernateUtil.getSessionFactory().openSession()){
+            Query<UserDTO> query = session.createQuery("FROM tblUser WHERE username=:username", UserDTO.class);
             query.setParameter("username", username);
-            query.setParameter("password", password);
-            user = query.uniqueResult();
-        } catch (Exception e) {
-            e.printStackTrace();
+            UserDTO user = query.getSingleResult();
+            if (!user.getUsername().isEmpty()){
+                return true;
+            }
         }
-        return user;
+        return false;
     }
+    
 }

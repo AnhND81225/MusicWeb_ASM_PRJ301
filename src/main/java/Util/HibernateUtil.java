@@ -1,17 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Util;
 
-/* day la class de quản lý SessionFactory*/
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 
-/**
- *
- * @author ASUS
- */
 public class HibernateUtil {
 
     private static final SessionFactory sessionFactory = buildSessionFactory();
@@ -20,8 +11,8 @@ public class HibernateUtil {
         try {
             return new Configuration().configure().buildSessionFactory();
         } catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            e.printStackTrace(); // In lỗi ra console
+            throw new ExceptionInInitializerError(e); // Ném lỗi để dừng chương trình
         }
     }
 

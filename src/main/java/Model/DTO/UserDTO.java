@@ -35,7 +35,7 @@ public class UserDTO {
     private String email;
 
     @Column(name = "role", nullable = false)
-    private String role;
+    private String role = "Member";
 
     @Column(name = "create_time")
     private LocalDateTime createdAt = LocalDateTime.now();

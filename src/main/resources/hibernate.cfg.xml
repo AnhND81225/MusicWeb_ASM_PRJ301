@@ -2,6 +2,7 @@
 <!DOCTYPE hibernate-configuration PUBLIC
     "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
     "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+
 <hibernate-configuration>
     <session-factory>
         <!-- Database connection settings -->
@@ -24,6 +25,11 @@
         <!-- Mapping entity classes: chỉnh lại package.class tương ứng project của bạn -->
         <!-- Ví dụ: <mapping class="your.package.Doctor"/> -->
         <mapping class="Model.DTO.UserDTO"/>
+        <mapping class="Model.DTO.SongDTO"/> 
+        <mapping class="Model.DTO.AlbumDTO"/>
+        <mapping class="Model.DTO.GenreDTO"/>
+        <mapping class="Model.DTO.SongArtistDTO"/>
+        <mapping class="Model.DTO.ArtistDTO"/>
         <!-- <mapping class="your.package.Patient"/> -->
     </session-factory>
 </hibernate-configuration>

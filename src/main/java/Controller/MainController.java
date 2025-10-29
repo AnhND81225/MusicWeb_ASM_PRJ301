@@ -20,7 +20,7 @@ public class MainController extends HttpServlet {
         String url = "HomePage.jsp";
 
         // Các hành động liên quan đến người dùng
-        String[] userActions = {"login", "logout", "register", "updateProfile", "viewProfile"};
+        String[] userActions = {"login", "logout", "register", "updateProfile", "viewProfile", "verifyOTP"};
 
         // Các hành động liên quan đến bài hát
         String[] songActions = {"addSong", "deleteSong", "updateSong", "viewSong", "searchSong"};
@@ -46,10 +46,5 @@ public class MainController extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
-    }
-
-    @Override
-    public String getServletInfo() {
-        return "MainController điều hướng giữa UserController và SongController";
     }
 }
