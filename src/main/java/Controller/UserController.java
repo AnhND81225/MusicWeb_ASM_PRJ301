@@ -67,7 +67,7 @@ public class UserController extends HttpServlet {
             System.out.println("VerifyOTP");
             String otpSendStr = request.getParameter("otpSend");
             HttpSession session = request.getSession();
-            
+
             LocalDateTime otpSend = LocalDateTime.parse(otpSendStr.replace(" ", "T")); // chuyển ' ' → 'T' nếu có
             String otpOriginal = (String) session.getAttribute("otp");
             String otpInput = request.getParameter("txtOTP"); // OTP người dùng nhập
@@ -126,6 +126,15 @@ public class UserController extends HttpServlet {
         }
     }
 
+    protected void processLogout(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try ( PrintWriter out = response.getWriter()) {
+            HttpSession session = request.getSession();
+            session.invalidate();
+        }
+    }
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -139,6 +148,8 @@ public class UserController extends HttpServlet {
                 processRegister(request, response);
             } else if (action.equalsIgnoreCase("verifyOTP")) {
                 processVerifyOTP(request, response);
+            } else if (action.equalsIgnoreCase("logout")) {
+                processLogout(request, response);
             }
         }
     }
