@@ -1,35 +1,60 @@
 package Controller;
 
-import java.io.IOException;
-import java.util.Arrays;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.Arrays;
 
 @WebServlet(name = "MainController", urlPatterns = {"/MainController"})
 public class MainController extends HttpServlet {
+
+    // Trang chủ mặc định (không dùng /JSP/)
+    private static final String HOME_PAGE = "HomePage.jsp";
+
+    // Các nhóm action theo chức năng
+    private static final String[] USER_ACTIONS = {
+        "login", "logout", "register", "updateProfile", "viewProfile"
+    };
+
+    private static final String[] SONG_ACTIONS = {
+        "add", "update", "callUpdate", "hide", "restore", "viewHidden", "top", "play", "view"
+    };
+
+    private static final String[] ARTIST_ACTIONS = {
+        "addArtist", "updateArtist", "viewArtist", "hideArtist", "restoreArtist", "search"
+    };
+
+    private static final String[] ALBUM_ACTIONS = {
+        "addAlbum", "updateAlbum", "viewAlbum", "hideAlbum", "restoreAlbum", "searchAlbum"
+    };
+    private static final String[] SEARCH_ACTIONS = {
+        "searchAll"
+    };
+    private static final String[] GENRE_ACTIONS = {
+        "addGenre", "updateGenre", "viewGenre", "searchGenre", "featured"
+    };
 
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
-  
-        String txtAction = request.getParameter("txtAction");
-        String url = "HomePage.jsp";
+        String action = request.getParameter("txtAction");
+        String url = HOME_PAGE;
 
-        // Các hành động liên quan đến người dùng
-        String[] userActions = {"login", "logout", "register", "updateProfile", "viewProfile"};
-
-        // Các hành động liên quan đến bài hát
-        String[] songActions = {"addSong", "deleteSong", "updateSong", "viewSong", "searchSong"};
-
-        if (txtAction != null) {
-            if (Arrays.asList(userActions).contains(txtAction)) {
+        if (action != null) {
+            if (Arrays.asList(USER_ACTIONS).contains(action)) {
                 url = "UserController";
-            } else if (Arrays.asList(songActions).contains(txtAction)) {
+            } else if (Arrays.asList(SONG_ACTIONS).contains(action)) {
                 url = "SongController";
+            } else if (Arrays.asList(ARTIST_ACTIONS).contains(action)) {
+                url = "ArtistController";
+            } else if (Arrays.asList(ALBUM_ACTIONS).contains(action)) {
+                url = "AlbumController";
+            } else if (Arrays.asList(GENRE_ACTIONS).contains(action)) {
+                url = "GenreController";
+            } else if (Arrays.asList(SEARCH_ACTIONS).contains(action)) {
+                url = "SearchController";
             }
         }
 

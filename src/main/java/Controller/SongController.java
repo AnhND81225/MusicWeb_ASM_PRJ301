@@ -1,76 +1,171 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import Model.DTO.SongDTO;
+import Service.SongService;
+import Service.ValidationService;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
-/**
- *
- * @author ASUS
- */
 @WebServlet(name = "SongController", urlPatterns = {"/SongController"})
 public class SongController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        String action = request.getParameter("txtAction");
-    }
+    private final SongService songService = new SongService();
+    private final ValidationService validator = new ValidationService();
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        processRequest(request, response);
+        processRequest(req, res);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        processRequest(request, response);
+        processRequest(req, res);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+    protected void processRequest(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+
+        String action = Optional.ofNullable(req.getParameter("txtAction")).orElse("view");
+        switch (action) {
+            case "add":
+                handleSaveSong(req, res, false);
+                break;
+            case "update":
+                handleSaveSong(req, res, true);
+                break;
+            case "callUpdate":
+                handleCallUpdate(req, res);
+                break;
+            case "hide":
+                handleHideSong(req, res);
+                break;
+            case "restore":
+                handleRestoreSong(req, res);
+                break;
+            case "viewHidden":
+                handleViewHiddenSongs(req, res);
+                break;
+            case "top":
+                handleViewTopSongs(req, res);
+                break;
+            case "play":
+                handlePlaySong(req, res);
+                break;
+            case "view":
+            default:
+                handleViewSongs(req, res);
+                break;
+        }
+
+    }
+
+    private void handleViewSongs(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        List<SongDTO> songs = songService.getAllSongs();
+        req.setAttribute("listOfSongs", songs);
+        req.getRequestDispatcher("listOfSongs.jsp").forward(req, res);
+
+    }
+
+    private void handleViewHiddenSongs(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        List<SongDTO> songs = songService.getHiddenSongs();
+        req.setAttribute("listOfSongs", songs);
+        req.getRequestDispatcher("listOfHiddenSongs.jsp").forward(req, res);
+
+    }
+
+    private void handleViewTopSongs(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        List<SongDTO> songs = songService.getTopSongs(10);
+        req.setAttribute("listOfSongs", songs);
+        req.getRequestDispatcher("topSongs.jsp").forward(req, res);
+
+    }
+
+    private void handleCallUpdate(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+        try {
+            int id = Integer.parseInt(req.getParameter("songID"));
+            SongDTO song = songService.getSongById(id);
+            req.setAttribute("s", song);
+            req.setAttribute("update", true);
+            req.getRequestDispatcher("songForm.jsp").forward(req, res);
+
+        } catch (Exception e) {
+            res.sendRedirect("SongController?txtAction=view");
+        }
+    }
+
+    private void handleSaveSong(HttpServletRequest req, HttpServletResponse res, boolean update)
+            throws ServletException, IOException {
+        SongDTO song = extractSong(req);
+
+        if (!validator.isValid(song)) {
+            req.setAttribute("error", "Thông tin bài hát không hợp lệ.");
+            req.setAttribute("s", song);
+            req.getRequestDispatcher("songForm.jsp").forward(req, res);
+
+            return;
+        }
+
+        boolean success = update ? songService.updateSong(song) : songService.addSong(song);
+        if (!success) {
+            req.setAttribute("error", "Không thể lưu bài hát.");
+            req.setAttribute("s", song);
+            req.getRequestDispatcher("songForm.jsp").forward(req, res);
+
+            return;
+        }
+
+        res.sendRedirect("SongController?txtAction=view");
+    }
+
+    private SongDTO extractSong(HttpServletRequest req) {
+        String title = req.getParameter("title");
+        String filePath = req.getParameter("filePath");
+        int duration = 0;
+        try {
+            duration = Integer.parseInt(req.getParameter("duration"));
+        } catch (NumberFormatException e) {
+            duration = -1;
+        }
+        SongDTO song = new SongDTO();
+        song.setTitle(title);
+        song.setFilePath(filePath);
+        song.setDuration(duration);
+        return song;
+    }
+
+    private void handleHideSong(HttpServletRequest req, HttpServletResponse res)
+            throws IOException {
+        int id = Integer.parseInt(req.getParameter("songID"));
+        songService.hideSong(id);
+        res.sendRedirect("SongController?txtAction=view");
+    }
+
+    private void handleRestoreSong(HttpServletRequest req, HttpServletResponse res)
+            throws IOException {
+        int id = Integer.parseInt(req.getParameter("songID"));
+        songService.restoreSong(id);
+        res.sendRedirect("SongController?txtAction=viewHidden");
+    }
+
+    private void handlePlaySong(HttpServletRequest req, HttpServletResponse res)
+            throws IOException {
+        int id = Integer.parseInt(req.getParameter("songID"));
+        songService.increasePlayCount(id);
+        res.sendRedirect("SongController?txtAction=view");
+    }
+
     @Override
     public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
+        return "SongController handles all song-related actions";
+    }
 }

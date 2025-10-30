@@ -27,7 +27,6 @@
         <mapping class="Model.DTO.SongDTO"/> 
         <mapping class="Model.DTO.AlbumDTO"/>
         <mapping class="Model.DTO.GenreDTO"/>
-        <mapping class="Model.DTO.SongArtistDTO"/>
         <mapping class="Model.DTO.ArtistDTO"/>
         <!-- <mapping class="your.package.Patient"/> -->
     </session-factory>

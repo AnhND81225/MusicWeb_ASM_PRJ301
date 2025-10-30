@@ -68,4 +68,11 @@ public class GenreDao {
         }
     }
 
+    public List<GenreDTO> getFeaturedGenres() {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM GenreDTO WHERE isFeatured = true";
+            return session.createQuery(hql, GenreDTO.class).list();
+        }
+    }
+
 }

@@ -64,4 +64,17 @@ public class AlbumService {
     public SongDTO addSongToAlbum(SongDTO song, int albumId) {
         return albumDao.addSongToAlbum(song, albumId);
     }
+
+    public List<AlbumDTO> getFeaturedAlbums() {
+        return albumDao.getFeaturedAlbums();
+    }
+
+    public List<AlbumDTO> getNewAlbums() {
+        return albumDao.getNewAlbums();
+    }
+
+    public List<AlbumDTO> getAlbumsSortedByReleaseDate() {
+        return albumDao.getAlbumsSortedByReleaseDate();
+    }
+
 }

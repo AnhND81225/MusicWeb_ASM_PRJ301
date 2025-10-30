@@ -63,4 +63,24 @@ public class SongService {
     public List<SongDTO> getHiddenSongs() {
         return songDao.getHiddenSongs();
     }
+
+    // lay bai hat moi nhat(30 ngay gan nhat)
+    public List<SongDTO> getNewSongs() {
+        return songDao.getNewSongs();
+    }
+
+    //Lấy bài hát nổi bật (isFeatured = true)
+    public List<SongDTO> getFeaturedSongs() {
+        return songDao.getFeaturedSongs();
+    }
+
+    //Lấy top bài hát theo lượt nghe (playCount)
+    public List<SongDTO> getTopSongs(int limit) {
+        return songDao.getTopSongs(limit);
+    }
+//Tang luot nghe khi nguoi dung nhan nut play
+    public boolean increasePlayCount(int songId) {
+        return songDao.increasePlayCount(songId);
+    }
+
 }

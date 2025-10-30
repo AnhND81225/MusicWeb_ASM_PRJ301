@@ -1,15 +1,8 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DTO;
 
-/**
- *
- * @author ASUS
- */
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Artist")
@@ -38,12 +31,22 @@ public class ArtistDTO {
     @Column(name = "is_hidden")
     private boolean isHidden = false;
 
-    // Constructor không tham số
+    @Column(name = "is_popular")
+    private boolean isPopular = false;
+
+    @Column(name = "follower_count")
+    private int followerCount = 0;
+
+    @ManyToMany(mappedBy = "artists")
+    private List<SongDTO> songs;
+
     public ArtistDTO() {
     }
 
-    // Constructor đầy đủ
-    public ArtistDTO(int artistId, String name, String bio, String image, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isHidden) {
+    public ArtistDTO(int artistId, String name, String bio, String image,
+            LocalDateTime createdAt, LocalDateTime updatedAt,
+            boolean isHidden, boolean isPopular, int followerCount,
+            List<SongDTO> songs) {
         this.artistId = artistId;
         this.name = name;
         this.bio = bio;
@@ -51,9 +54,12 @@ public class ArtistDTO {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isHidden = isHidden;
+        this.isPopular = isPopular;
+        this.followerCount = followerCount;
+        this.songs = songs;
     }
 
-    // Getter và Setter
+    // Getters và setters
     public int getArtistId() {
         return artistId;
     }
@@ -108,5 +114,29 @@ public class ArtistDTO {
 
     public void setHidden(boolean hidden) {
         isHidden = hidden;
+    }
+
+    public boolean isPopular() {
+        return isPopular;
+    }
+
+    public void setPopular(boolean popular) {
+        isPopular = popular;
+    }
+
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    public List<SongDTO> getSongs() {
+        return songs;
+    }
+
+    public void setSongs(List<SongDTO> songs) {
+        this.songs = songs;
     }
 }

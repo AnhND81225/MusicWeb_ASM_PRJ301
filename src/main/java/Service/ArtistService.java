@@ -48,4 +48,17 @@ public class ArtistService {
     public List<ArtistDTO> getHiddenArtists() {
         return artistDao.getHiddenArtists();
     }
+
+    public List<ArtistDTO> getPopularArtists() {
+        return artistDao.getPopularArtists();
+    }
+
+    public List<ArtistDTO> getTopArtists(int limit) {
+        return artistDao.getTopArtists(limit);
+    }
+
+    public boolean increaseFollowerCount(int artistId) {
+        return artistDao.increaseFollowerCount(artistId);
+    }
+
 }

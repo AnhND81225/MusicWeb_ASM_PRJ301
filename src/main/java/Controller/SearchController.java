@@ -1,87 +1,59 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import Service.SongService;
+import Service.AlbumService;
+import Service.ArtistService;
+import Model.DTO.AlbumDTO;
+import Model.DTO.ArtistDTO;
+import Model.DTO.SongDTO;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
-/**
- *
- * @author ASUS
- */
 @WebServlet(name = "SearchController", urlPatterns = {"/SearchController"})
 public class SearchController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+    private final SongService songService = new SongService();
+    private final AlbumService albumService = new AlbumService();
+    private final ArtistService artistService = new ArtistService();
+
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet SearchController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet SearchController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+        String keyword = Optional.ofNullable(req.getParameter("keyword")).orElse("").trim();
+
+        // Tìm kiếm cả 3 loại
+        List<SongDTO> songs = songService.searchSongs(keyword);
+        List<AlbumDTO> albums = albumService.searchAlbums(keyword);
+        List<ArtistDTO> artists = artistService.searchArtists(keyword);
+
+        req.setAttribute("searchKeyword", keyword);
+
+        boolean hasSongs = songs != null && !songs.isEmpty();
+        boolean hasAlbums = albums != null && !albums.isEmpty();
+        boolean hasArtists = artists != null && !artists.isEmpty();
+
+        // Điều hướng thông minh
+        if (hasSongs && !hasAlbums && !hasArtists) {
+            req.setAttribute("listOfSongs", songs);
+            req.getRequestDispatcher("songSearchResults.jsp").forward(req, res);
+        } else if (!hasSongs && hasAlbums && !hasArtists) {
+            req.setAttribute("listOfAlbums", albums);
+            req.getRequestDispatcher("albumSearchResults.jsp").forward(req, res);
+        } else if (!hasSongs && !hasAlbums && hasArtists) {
+            req.setAttribute("listOfArtists", artists);
+            req.getRequestDispatcher("artistSearchResults.jsp").forward(req, res);
+        } else {
+            // Có nhiều loại kết quả → chuyển đến trang tổng hợp
+            req.setAttribute("listOfSongs", songs);
+            req.setAttribute("listOfAlbums", albums);
+            req.setAttribute("listOfArtists", artists);
+            req.getRequestDispatcher("searchAllResults.jsp").forward(req, res);
         }
     }
-
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        processRequest(request, response);
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

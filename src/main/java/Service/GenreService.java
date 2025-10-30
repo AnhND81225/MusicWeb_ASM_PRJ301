@@ -33,4 +33,9 @@ public class GenreService {
     public GenreDTO getGenreById(int genreId) {
         return genreDao.getById(genreId);
     }
+
+    public List<GenreDTO> getFeaturedGenres() {
+        return genreDao.getFeaturedGenres();
+    }
+
 }

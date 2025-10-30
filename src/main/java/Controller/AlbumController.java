@@ -1,87 +1,172 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import Model.DTO.AlbumDTO;
+import Service.AlbumService;
+import Service.ValidationService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
 
-/**
- *
- * @author ASUS
- */
 @WebServlet(name = "AlbumController", urlPatterns = {"/AlbumController"})
 public class AlbumController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private final AlbumService albumService = new AlbumService();
+    private final ValidationService validator = new ValidationService();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet AlbumController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet AlbumController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+        String action = Optional.ofNullable(request.getParameter("txtAction")).orElse("viewAlbum");
+
+        switch (action) {
+            case "addAlbum":
+                handleAddAlbum(request, response);
+                break;
+            case "updateAlbum":
+                handleUpdateAlbum(request, response);
+                break;
+            case "hideAlbum":
+                handleHideAlbum(request, response);
+                break;
+            case "restoreAlbum":
+                handleRestoreAlbum(request, response);
+                break;
+            case "searchAlbum":
+                handleSearchAlbum(request, response);
+                break;
+            case "viewHidden":
+                handleViewHiddenAlbums(request, response);
+                break;
+            case "featured":
+                handleFeaturedAlbums(request, response);
+                break;
+            case "sorted":
+                handleSortedAlbums(request, response);
+                break;
+            case "viewAlbum":
+            default:
+                handleViewAlbums(request, response);
+                break;
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private void handleViewAlbums(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<AlbumDTO> albums = albumService.getAllAlbums();
+        request.setAttribute("listOfAlbums", albums);
+        request.getRequestDispatcher("listOfAlbums.jsp").forward(request, response);
+    }
+
+    private void handleViewHiddenAlbums(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<AlbumDTO> albums = albumService.getHiddenAlbums();
+        request.setAttribute("listOfAlbums", albums);
+        request.getRequestDispatcher("listOfHiddenAlbums.jsp").forward(request, response);
+    }
+
+    private void handleAddAlbum(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        AlbumDTO album = extractAlbumFromRequest(request, false);
+
+        if (!validator.isValid(album)) {
+            request.setAttribute("error", "Thông tin album không hợp lệ.");
+            request.setAttribute("a", album);
+            request.getRequestDispatcher("albumForm.jsp").forward(request, response);
+            return;
+        }
+
+        albumService.createAlbum(album);
+        response.sendRedirect("AlbumController?txtAction=viewAlbum");
+    }
+
+    private void handleUpdateAlbum(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        AlbumDTO album = extractAlbumFromRequest(request, true);
+
+        if (!validator.isValid(album)) {
+            request.setAttribute("error", "Thông tin album không hợp lệ.");
+            request.setAttribute("a", album);
+            request.getRequestDispatcher("albumForm.jsp").forward(request, response);
+            return;
+        }
+
+        albumService.updateAlbum(album);
+        response.sendRedirect("AlbumController?txtAction=viewAlbum");
+    }
+
+    private void handleHideAlbum(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("albumID"));
+        albumService.hideAlbum(id);
+        response.sendRedirect("AlbumController?txtAction=viewAlbum");
+    }
+
+    private void handleRestoreAlbum(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("albumID"));
+        albumService.restoreAlbum(id);
+        response.sendRedirect("AlbumController?txtAction=viewHidden");
+    }
+
+    private void handleSearchAlbum(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String keyword = Optional.ofNullable(request.getParameter("keyword")).orElse("").trim();
+        List<AlbumDTO> albums = albumService.searchAlbums(keyword);
+        request.setAttribute("searchKeyword", keyword);
+        request.setAttribute("listOfAlbums", albums);
+        request.getRequestDispatcher("searchAlbumResults.jsp").forward(request, response);
+    }
+
+    private void handleFeaturedAlbums(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<AlbumDTO> albums = albumService.getFeaturedAlbums();
+        request.setAttribute("listOfAlbums", albums);
+        request.getRequestDispatcher("listOfAlbums.jsp").forward(request, response);
+    }
+
+    private void handleSortedAlbums(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<AlbumDTO> albums = albumService.getAlbumsSortedByReleaseDate();
+        request.setAttribute("listOfAlbums", albums);
+        request.getRequestDispatcher("listOfAlbums.jsp").forward(request, response);
+    }
+
+    private AlbumDTO extractAlbumFromRequest(HttpServletRequest request, boolean isUpdate) {
+        AlbumDTO album = new AlbumDTO();
+
+        if (isUpdate) {
+            int id = Integer.parseInt(request.getParameter("albumID"));
+            album.setAlbumId(id);
+        }
+
+        album.setName(request.getParameter("name"));
+
+        String dateStr = request.getParameter("releaseDate");
+        try {
+            LocalDateTime releaseDate = LocalDate.parse(dateStr).atStartOfDay();
+            album.setReleaseDate(releaseDate);
+        } catch (Exception e) {
+            album.setReleaseDate(null); // để validator bắt lỗi
+        }
+
+        return album;
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

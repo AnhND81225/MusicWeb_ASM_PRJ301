@@ -11,14 +11,14 @@ public class SongDao {
 
     // Lấy tất cả bài hát chưa bị ẩn
     public List<SongDTO> getAllSongs() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM SongDTO WHERE isHidden = false", SongDTO.class).list();
         }
     }
 
     // Lấy bài hát theo ID
     public SongDTO getById(int id) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.get(SongDTO.class, id);
         }
     }
@@ -26,13 +26,15 @@ public class SongDao {
     // Thêm bài hát mới
     public boolean insert(SongDTO song) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
             session.save(song);
             tx.commit();
             return true;
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null) {
+                tx.rollback();
+            }
             e.printStackTrace();
             return false;
         }
@@ -41,13 +43,15 @@ public class SongDao {
     // Cập nhật bài hát
     public boolean update(SongDTO song) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             tx = session.beginTransaction();
             session.update(song);
             tx.commit();
             return true;
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null) {
+                tx.rollback();
+            }
             e.printStackTrace();
             return false;
         }
@@ -56,9 +60,11 @@ public class SongDao {
     // Xóa mềm bài hát (ẩn đi)
     public boolean hide(int songId) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             SongDTO song = session.get(SongDTO.class, songId);
-            if (song == null) return false;
+            if (song == null) {
+                return false;
+            }
 
             tx = session.beginTransaction();
             song.setHidden(true);
@@ -66,7 +72,9 @@ public class SongDao {
             tx.commit();
             return true;
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null) {
+                tx.rollback();
+            }
             e.printStackTrace();
             return false;
         }
@@ -75,9 +83,11 @@ public class SongDao {
     // Khôi phục bài hát đã bị ẩn
     public boolean restore(int songId) {
         Transaction tx = null;
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             SongDTO song = session.get(SongDTO.class, songId);
-            if (song == null) return false;
+            if (song == null) {
+                return false;
+            }
 
             tx = session.beginTransaction();
             song.setHidden(false);
@@ -85,7 +95,9 @@ public class SongDao {
             tx.commit();
             return true;
         } catch (Exception e) {
-            if (tx != null) tx.rollback();
+            if (tx != null) {
+                tx.rollback();
+            }
             e.printStackTrace();
             return false;
         }
@@ -93,9 +105,9 @@ public class SongDao {
 
     // Tìm kiếm bài hát theo từ khóa (tên bài hát hoặc tên nghệ sĩ)
     public List<SongDTO> searchByKeyword(String keyword) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
-            String hql = "FROM SongDTO WHERE isHidden = false AND " +
-                         "(lower(title) LIKE :kw OR lower(artist.name) LIKE :kw)";
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM SongDTO WHERE isHidden = false AND "
+                    + "(lower(title) LIKE :kw OR lower(artist.name) LIKE :kw)";
             return session.createQuery(hql, SongDTO.class)
                     .setParameter("kw", "%" + keyword.toLowerCase() + "%")
                     .list();
@@ -104,38 +116,88 @@ public class SongDao {
 
     // Lấy bài hát theo album
     public List<SongDTO> getSongsByAlbum(int albumId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
-                "FROM SongDTO WHERE isHidden = false AND album.albumId = :albumId", SongDTO.class)
-                .setParameter("albumId", albumId)
-                .list();
+                    "FROM SongDTO WHERE isHidden = false AND album.albumId = :albumId", SongDTO.class)
+                    .setParameter("albumId", albumId)
+                    .list();
         }
     }
 
     // Lấy bài hát theo nghệ sĩ
     public List<SongDTO> getSongsByArtist(int artistId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
-                "FROM SongDTO WHERE isHidden = false AND artist.artistId = :artistId", SongDTO.class)
-                .setParameter("artistId", artistId)
-                .list();
+                    "FROM SongDTO WHERE isHidden = false AND artist.artistId = :artistId", SongDTO.class)
+                    .setParameter("artistId", artistId)
+                    .list();
         }
     }
 
     // Lấy bài hát theo thể loại
     public List<SongDTO> getSongsByGenre(int genreId) {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery(
-                "FROM SongDTO WHERE isHidden = false AND genre.genreId = :genreId", SongDTO.class)
-                .setParameter("genreId", genreId)
-                .list();
+                    "FROM SongDTO WHERE isHidden = false AND genre.genreId = :genreId", SongDTO.class)
+                    .setParameter("genreId", genreId)
+                    .list();
         }
     }
 
     // Lấy danh sách bài hát đã bị ẩn
     public List<SongDTO> getHiddenSongs() {
-        try (Session session = HibernateUtil.getSessionFactory().openSession()) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
             return session.createQuery("FROM SongDTO WHERE isHidden = true", SongDTO.class).list();
         }
     }
+
+    // lay bai hat moi nhat(30 ngay gan nhat)
+    public List<SongDTO> getNewSongs() {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM SongDTO WHERE isHidden = false AND createdAt >= current_date() - 30";
+            return session.createQuery(hql, SongDTO.class).list();
+        }
+    }
+
+    //Lấy bài hát nổi bật (isFeatured = true)
+    public List<SongDTO> getFeaturedSongs() {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM SongDTO WHERE isHidden = false AND isFeatured = true";
+            return session.createQuery(hql, SongDTO.class).list();
+        }
+    }
+
+    //Lấy top bài hát theo lượt nghe (playCount)
+    public List<SongDTO> getTopSongs(int limit) {
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
+            String hql = "FROM SongDTO WHERE isHidden = false ORDER BY playCount DESC";
+            return session.createQuery(hql, SongDTO.class)
+                    .setMaxResults(limit)
+                    .list();
+        }
+    }
+
+    //Tang luot nghe khi nguoi dung nhan nut play
+    public boolean increasePlayCount(int songId) {
+        Transaction tx = null;
+        try ( Session session = HibernateUtil.getSessionFactory().openSession()) {
+            SongDTO song = session.get(SongDTO.class, songId);
+            if (song == null || song.isHidden()) {
+                return false;
+            }
+
+            tx = session.beginTransaction();
+            song.setPlayCount(song.getPlayCount() + 1);
+            session.update(song);
+            tx.commit();
+            return true;
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+            return false;
+        }
+    }
+
 }

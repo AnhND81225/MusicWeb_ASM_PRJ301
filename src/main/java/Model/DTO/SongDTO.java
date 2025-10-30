@@ -1,23 +1,9 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Model.DTO;
 
 import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import java.util.List;
+import javax.persistence.*;
 
-/**
- *
- * @author ASUS
- */
 @Entity
 @Table(name = "Song")
 public class SongDTO {
@@ -37,11 +23,11 @@ public class SongDTO {
     private int duration;
 
     @ManyToOne
-    @JoinColumn(name = "album_id", referencedColumnName = "album_id", nullable = true)
+    @JoinColumn(name = "album_id", referencedColumnName = "album_id")
     private AlbumDTO album;
 
     @ManyToOne
-    @JoinColumn(name = "genre_id", referencedColumnName = "genre_id", nullable = true)
+    @JoinColumn(name = "genre_id", referencedColumnName = "genre_id")
     private GenreDTO genre;
 
     @Column(name = "created_at")
@@ -53,9 +39,27 @@ public class SongDTO {
     @Column(name = "is_hidden")
     private boolean isHidden = false;
 
+    @Column(name = "is_featured")
+    private boolean isFeatured = false;
+
+    @Column(name = "play_count")
+    private int playCount = 0;
+
+    @ManyToMany
+    @JoinTable(
+            name = "SongArtist",
+            joinColumns = @JoinColumn(name = "song_id"),
+            inverseJoinColumns = @JoinColumn(name = "artist_id")
+    )
+    private List<ArtistDTO> artists;
+
     public SongDTO() {
     }
-    public SongDTO(int songId, String title, String filePath, int duration, AlbumDTO album, GenreDTO genre, LocalDateTime createdAt, LocalDateTime updatedAt, boolean isHidden) {
+
+    // Constructor đầy đủ
+    public SongDTO(int songId, String title, String filePath, int duration, AlbumDTO album, GenreDTO genre,
+            LocalDateTime createdAt, LocalDateTime updatedAt, boolean isHidden,
+            boolean isFeatured, int playCount, List<ArtistDTO> artists) {
         this.songId = songId;
         this.title = title;
         this.filePath = filePath;
@@ -65,8 +69,12 @@ public class SongDTO {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.isHidden = isHidden;
+        this.isFeatured = isFeatured;
+        this.playCount = playCount;
+        this.artists = artists;
     }
 
+    // Getters và setters
     public int getSongId() {
         return songId;
     }
@@ -137,5 +145,29 @@ public class SongDTO {
 
     public void setHidden(boolean hidden) {
         isHidden = hidden;
+    }
+
+    public boolean isFeatured() {
+        return isFeatured;
+    }
+
+    public void setFeatured(boolean featured) {
+        isFeatured = featured;
+    }
+
+    public int getPlayCount() {
+        return playCount;
+    }
+
+    public void setPlayCount(int playCount) {
+        this.playCount = playCount;
+    }
+
+    public List<ArtistDTO> getArtists() {
+        return artists;
+    }
+
+    public void setArtists(List<ArtistDTO> artists) {
+        this.artists = artists;
     }
 }

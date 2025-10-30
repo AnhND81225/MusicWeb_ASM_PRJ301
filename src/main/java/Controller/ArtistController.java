@@ -1,87 +1,131 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package Controller;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import Model.DTO.ArtistDTO;
+import Service.ArtistService;
+import Service.ValidationService;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.*;
+import java.io.IOException;
+import java.util.List;
+import java.util.Optional;
 
-/**
- *
- * @author ASUS
- */
 @WebServlet(name = "ArtistController", urlPatterns = {"/ArtistController"})
 public class ArtistController extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private final ArtistService artistService = new ArtistService();
+    private final ValidationService validator = new ValidationService();
+
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        try ( PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("<!DOCTYPE html>");
-            out.println("<html>");
-            out.println("<head>");
-            out.println("<title>Servlet ArtistController</title>");            
-            out.println("</head>");
-            out.println("<body>");
-            out.println("<h1>Servlet ArtistController at " + request.getContextPath() + "</h1>");
-            out.println("</body>");
-            out.println("</html>");
+
+        String action = Optional.ofNullable(request.getParameter("txtAction")).orElse("viewArtist");
+
+        switch (action) {
+            case "addArtist":
+                handleAddArtist(request, response);
+                break;
+            case "updateArtist":
+                handleUpdateArtist(request, response);
+                break;
+            case "hideArtist":
+                handleHideArtist(request, response);
+                break;
+            case "restoreArtist":
+                handleRestoreArtist(request, response);
+                break;
+            case "search":
+                handleSearchArtist(request, response);
+                break;
+            case "viewArtist":
+            default:
+                handleViewArtists(request, response);
+                break;
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
+    private void handleViewArtists(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        List<ArtistDTO> artists = artistService.getAllArtists();
+        request.setAttribute("listOfArtists", artists);
+        request.getRequestDispatcher("listOfArtists.jsp").forward(request, response);
+    }
+
+    private void handleAddArtist(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String name = request.getParameter("name");
+        String bio = request.getParameter("bio");
+
+        ArtistDTO artist = new ArtistDTO();
+        artist.setName(name);
+        artist.setBio(bio);
+
+        if (!validator.isValid(artist)) {
+            request.setAttribute("error", "Thông tin nghệ sĩ không hợp lệ.");
+            request.setAttribute("a", artist);
+            request.getRequestDispatcher("artistForm.jsp").forward(request, response);
+            return;
+        }
+
+        artistService.addArtist(artist);
+        response.sendRedirect("ArtistController?txtAction=viewArtist");
+    }
+
+    private void handleUpdateArtist(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("artistID"));
+        String name = request.getParameter("name");
+        String bio = request.getParameter("bio");
+
+        ArtistDTO artist = new ArtistDTO();
+        artist.setArtistId(id);
+        artist.setName(name);
+        artist.setBio(bio);
+
+        if (!validator.isValid(artist)) {
+            request.setAttribute("error", "Thông tin nghệ sĩ không hợp lệ.");
+            request.setAttribute("a", artist);
+            request.getRequestDispatcher("artistForm.jsp").forward(request, response);
+            return;
+        }
+
+        artistService.updateArtist(artist);
+        response.sendRedirect("ArtistController?txtAction=viewArtist");
+    }
+
+    private void handleHideArtist(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("artistID"));
+        artistService.hideArtist(id);
+        response.sendRedirect("ArtistController?txtAction=viewArtist");
+    }
+
+    private void handleRestoreArtist(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+        int id = Integer.parseInt(request.getParameter("artistID"));
+        artistService.restoreArtist(id);
+        response.sendRedirect("ArtistController?txtAction=viewArtist");
+    }
+
+    private void handleSearchArtist(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String keyword = Optional.ofNullable(request.getParameter("keyword")).orElse("").trim();
+        List<ArtistDTO> artists = artistService.searchArtists(keyword);
+        request.setAttribute("searchKeyword", keyword);
+        request.setAttribute("listOfArtists", artists);
+        request.getRequestDispatcher("searchArtistResults.jsp").forward(request, response);
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         processRequest(request, response);
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }
