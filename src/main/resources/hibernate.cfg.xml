@@ -24,11 +24,17 @@
 
         <!-- Mapping entity classes: chỉnh lại package.class tương ứng project của bạn -->
         <!-- Ví dụ: <mapping class="your.package.Doctor"/> -->
+        <mapping class="Model.DTO.DownloadHistoryDTO"/> 
+        <mapping class="Model.DTO.CommentDTO"/> 
+        <mapping class="Model.DTO.HistoryDTO"/> 
+        <mapping class="Model.DTO.SongLikesDTO"/> 
+        <mapping class="Model.DTO.NotificationDTO"/> 
         <mapping class="Model.DTO.SongDTO"/> 
         <mapping class="Model.DTO.AlbumDTO"/>
         <mapping class="Model.DTO.GenreDTO"/>
         <mapping class="Model.DTO.SongArtistDTO"/>
         <mapping class="Model.DTO.ArtistDTO"/>
+        <mapping class="Model.DTO.UserDTO"/>
         <!-- <mapping class="your.package.Patient"/> -->
     </session-factory>
 </hibernate-configuration>
