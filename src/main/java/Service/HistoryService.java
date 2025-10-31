@@ -18,32 +18,32 @@ public class HistoryService {
         this.historyDAO = historyDAO;
     }
 
-    // 🟢 Thêm mới lịch sử nghe nhạc
+    //Thêm mới lịch sử nghe nhạc
     public boolean addHistory(HistoryDTO history) {
         return historyDAO.insert(history) > 0;
     }
 
-    // 🟡 Xóa mềm lịch sử theo ID
+    // Xóa mềm lịch sử theo ID
     public boolean deleteHistorySoft(Integer id) {
         return historyDAO.deleteSoft(id) > 0;
     }
 
-    // 🟢 Lấy tất cả lịch sử chưa bị ẩn
+    // Lấy tất cả lịch sử chưa bị ẩn
     public List<HistoryDTO> getAllHistory() {
         return historyDAO.selectAll();
     }
 
-    // 🟢 Lấy lịch sử theo ID
+    //  Lấy lịch sử theo ID
     public HistoryDTO getHistoryById(Integer id) {
         return historyDAO.selectById(id);
     }
 
-    // 🟢 Lấy lịch sử nghe nhạc theo người dùng
+    // Lấy lịch sử nghe nhạc theo người dùng
     public List<HistoryDTO> getHistoryByUser(UserDTO user) {
         return historyDAO.selectByUser(user);
     }
 
-    // 🟢 Lấy lịch sử nghe nhạc theo bài hát
+    // Lấy lịch sử nghe nhạc theo bài hát
     public List<HistoryDTO> getHistoryBySong(SongDTO song) {
         return historyDAO.selectBySong(song);
     }

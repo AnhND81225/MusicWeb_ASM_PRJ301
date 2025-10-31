@@ -16,7 +16,7 @@ public class HistoryDAO {
         this.factory = factory;
     }
 
-    // 🟢 Thêm mới lịch sử nghe nhạc
+    // Thêm mới lịch sử nghe nhạc
     public int insert(HistoryDTO x) {
         int kq = 0;
         Transaction tx = null;
@@ -32,7 +32,7 @@ public class HistoryDAO {
         return kq;
     }
 
-    // 🟡 Xóa mềm (ẩn bản ghi thay vì xóa thật)
+    // Xóa mềm (ẩn bản ghi thay vì xóa thật)
     public int deleteSoft(Integer id) {
         int kq = 0;
         Transaction tx = null;
@@ -52,7 +52,7 @@ public class HistoryDAO {
         return kq;
     }
 
-    // 🟢 Lấy tất cả bản ghi chưa bị xóa mềm
+    //  Lấy tất cả bản ghi chưa bị xóa mềm
     public List<HistoryDTO> selectAll() {
         try (Session session = factory.openSession()) {
             return session.createQuery(
@@ -62,14 +62,14 @@ public class HistoryDAO {
         }
     }
 
-    // 🟢 Lấy theo ID
+    //  Lấy theo ID
     public HistoryDTO selectById(Integer id) {
         try (Session session = factory.openSession()) {
             return session.get(HistoryDTO.class, id);
         }
     }
 
-    // 🟢 Lấy lịch sử theo người dùng
+    //  Lấy lịch sử theo người dùng
     public List<HistoryDTO> selectByUser(UserDTO user) {
         try (Session session = factory.openSession()) {
             return session.createQuery(
@@ -80,7 +80,7 @@ public class HistoryDAO {
         }
     }
 
-    // 🟢 Lấy lịch sử theo bài hát
+    // Lấy lịch sử theo bài hát
     public List<HistoryDTO> selectBySong(SongDTO song) {
         try (Session session = factory.openSession()) {
             return session.createQuery(
