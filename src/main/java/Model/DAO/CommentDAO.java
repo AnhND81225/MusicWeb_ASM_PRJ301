@@ -11,89 +11,60 @@ import org.hibernate.Transaction;
 
 public class CommentDAO {
 
-    private SessionFactory factory;
+    private final SessionFactory factory;
 
     public CommentDAO(SessionFactory factory) {
         this.factory = factory;
     }
 
-    public CommentDAO() {
-    }
-
-    // Thêm comment
     public int insert(CommentDTO x) {
-        int kq = 0;
         Transaction tx = null;
         try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
             session.save(x);
             tx.commit();
-            kq = 1;
+            return 1;
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
-        return kq;
+        return 0;
     }
 
-    // Xóa mềm comment
-    public int deleteSoft(CommentDTO x) {
-        int kq = 0;
+    public int softDelete(int id) {
         Transaction tx = null;
         try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
-            CommentDTO a = session.get(CommentDTO.class, x.getCommentId());
-            if (a != null && !a.isHidden()) {
-                a.setHidden(true);
-                session.update(a);
-                kq = 1;
+            CommentDTO c = session.get(CommentDTO.class, id);
+
+            if (c != null && !c.isHidden()) {
+                c.setHidden(true);
+                session.update(c);
+                tx.commit();
+                return 1;
             }
-            tx.commit();
+            tx.rollback();
         } catch (Exception e) {
             if (tx != null) tx.rollback();
             e.printStackTrace();
         }
-        return kq;
+        return 0;
     }
 
-    // Lấy tất cả comment
-    public List<CommentDTO> selectAll() {
-        try (Session session = factory.openSession()) {
-            return session.createQuery("FROM CommentDTO", CommentDTO.class).list();
-        }
-    }
-
-    // Lấy tất cả comment hiển thị (không bị ẩn)
-    public List<CommentDTO> selectAllVisible() {
-        try (Session session = factory.openSession()) {
-            return session.createQuery("FROM CommentDTO WHERE isHidden = false", CommentDTO.class).list();
-        }
-    }
-
-    // Lấy comment theo ID
-    public CommentDTO selectById(Integer id) {
+    public CommentDTO selectById(int id) {
         try (Session session = factory.openSession()) {
             return session.get(CommentDTO.class, id);
         }
     }
 
-    // Lấy comment theo người dùng
-    public List<CommentDTO> selectByUser(UserDTO user) {
+    public List<CommentDTO> selectBySongId(int songId) {
         try (Session session = factory.openSession()) {
             return session.createQuery(
-                "FROM CommentDTO WHERE user = :user AND isHidden = false", CommentDTO.class)
-                .setParameter("user", user)
-                .list();
-        }
-    }
-
-    // Lấy comment theo bài hát
-    public List<CommentDTO> selectBySong(SongDTO song) {
-        try (Session session = factory.openSession()) {
-            return session.createQuery(
-                "FROM CommentDTO WHERE song = :song AND isHidden = false", CommentDTO.class)
-                .setParameter("song", song)
-                .list();
+                "FROM CommentDTO WHERE song.songId = :songId AND isHidden = false",
+                CommentDTO.class
+            ).setParameter("songId", songId)
+             .list();
         }
     }
 }
+

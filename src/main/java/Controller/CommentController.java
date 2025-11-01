@@ -1,10 +1,12 @@
 package Controller;
 
 import Model.DAO.CommentDAO;
+import Model.DAO.NotificationDAO;
 import Model.DTO.CommentDTO;
 import Model.DTO.SongDTO;
 import Model.DTO.UserDTO;
 import Service.CommentService;
+import Service.NotificationService;
 import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -18,45 +20,82 @@ import Util.HibernateUtil;
 public class CommentController extends HttpServlet {
 
     private CommentService commentService;
+    private NotificationService notificationService;
 
     @Override
     public void init() throws ServletException {
         SessionFactory factory = HibernateUtil.getSessionFactory();
-        commentService = new CommentService(new CommentDAO(factory));
+        // 1. Khởi tạo NotificationService
+        this.notificationService = new NotificationService(new NotificationDAO(factory));
+
+        // 2. Khởi tạo CommentService với dependency mới
+        this.commentService = new CommentService(new CommentDAO(factory), this.notificationService);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        request.setCharacterEncoding("UTF-8");
 
+        request.setCharacterEncoding("UTF-8");
         String action = request.getParameter("action");
 
-        if ("add".equals(action)) {
-            String content = request.getParameter("content");
-            int userId = Integer.parseInt(request.getParameter("userId"));
-            int songId = Integer.parseInt(request.getParameter("songId"));
-
-            UserDTO user = new UserDTO();
-            user.setUserID(userId);
-
-            SongDTO song = new SongDTO();
-            song.setSongId(songId);
-
-            commentService.addComment(content, user, song);
-            response.sendRedirect("song?action=details&id=" + songId);
-            return;
-        }
-
-        if ("delete".equals(action)) {
-            int commentId = Integer.parseInt(request.getParameter("commentId"));
-            CommentDTO comment = commentService.getCommentById(commentId);
-
-            if (comment != null) {
-                commentService.deleteComment(comment);
-                response.sendRedirect("song?action=details&id=" + comment.getSong().getSongId());
+        try {
+            switch (action) {
+                case "add":
+                    handleAddComment(request, response);
+                    break;
+                case "delete":
+                    handleDeleteComment(request, response);
+                    break;
+                default:
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid action!");
             }
+        } catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid numeric parameter!");
         }
     }
 
+    // THAY THẾ HÀM NÀY
+    private void handleAddComment(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        String content = request.getParameter("content");
+        int userId = Integer.parseInt(request.getParameter("userId"));
+        int songId = Integer.parseInt(request.getParameter("songId"));
+
+        // BỔ SUNG: Lấy parentCommentId từ request (sẽ là null nếu là comment gốc)
+        Integer parentCommentId = null;
+        String parentIdParam = request.getParameter("parentCommentId");
+
+        if (parentIdParam != null && !parentIdParam.trim().isEmpty()) {
+            try {
+                parentCommentId = Integer.parseInt(parentIdParam);
+            } catch (NumberFormatException ignored) {
+                // Có thể bỏ qua hoặc báo lỗi nếu tham số không hợp lệ
+            }
+        }
+
+        if (content == null || content.trim().isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Comment cannot be empty!");
+            return;
+        }
+
+        // GỌI PHƯƠNG THỨC addComment MỚI
+        boolean success = commentService.addComment(content, userId, songId, parentCommentId);
+
+        response.sendRedirect("song?action=details&id=" + songId);
+    }
+
+    private void handleDeleteComment(HttpServletRequest request, HttpServletResponse response)
+            throws IOException {
+
+        int commentId = Integer.parseInt(request.getParameter("commentId"));
+        int songId = commentService.deleteComment(commentId);
+
+        if (songId != -1) {
+            response.sendRedirect("song?action=details&id=" + songId);
+        } else {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot delete this comment!");
+        }
+    }
 }

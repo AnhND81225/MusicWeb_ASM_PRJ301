@@ -33,6 +33,26 @@ public class CommentDTO implements Serializable {
 
     @Column(name = "is_hidden", nullable = false)
     private boolean isHidden = false;
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+@JoinColumn(name = "parent_comment_id", referencedColumnName = "comment_id", nullable = true)
+private CommentDTO parentComment;
+
+    public boolean isIsHidden() {
+        return isHidden;
+    }
+
+    public void setIsHidden(boolean isHidden) {
+        this.isHidden = isHidden;
+    }
+
+    public CommentDTO getParentComment() {
+        return parentComment;
+    }
+
+    public void setParentComment(CommentDTO parentComment) {
+        this.parentComment = parentComment;
+    }
 
     // ===== Constructors =====
     public CommentDTO() {

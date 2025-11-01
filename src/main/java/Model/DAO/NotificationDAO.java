@@ -94,4 +94,35 @@ public class NotificationDAO {
                     .list();
         }
     }
+
+    public int markAsRead(Integer notificationId) {
+        Transaction tx = null;
+        try ( Session session = factory.openSession()) {
+            tx = session.beginTransaction();
+            NotificationDTO notification = session.get(NotificationDTO.class, notificationId);
+            if (notification != null && !notification.getIsRead()) {
+                notification.setIsRead(true);
+                session.update(notification);
+                tx.commit();
+                return 1;
+            }
+            tx.rollback();
+        } catch (Exception e) {
+            if (tx != null) {
+                tx.rollback();
+            }
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    public List<NotificationDTO> selectUnreadByUserId(Integer userId) {
+        try ( Session session = factory.openSession()) {
+            return session.createQuery(
+                    "FROM NotificationDTO WHERE user.userId = :userId AND isHidden = false AND isRead = false ORDER BY createdAt DESC",
+                    NotificationDTO.class)
+                    .setParameter("userId", userId)
+                    .list();
+        }
+    }
 }

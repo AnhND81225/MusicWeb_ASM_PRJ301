@@ -50,4 +50,12 @@ public class NotificationService {
     public List<NotificationDTO> getNotificationsBySongId(Integer songId) {
         return notificationDAO.selectBySongId(songId);
     }
+    // đánh dấu đã đọc
+    public boolean markNotificationAsRead(Integer notificationId) {
+    return notificationDAO.markAsRead(notificationId) > 0;
+}
+    //lấy thông báo chưa đọc theo user
+    public List<NotificationDTO> getUnreadNotificationsByUserId(Integer userId) {
+    return notificationDAO.selectUnreadByUserId(userId);
+}
 }

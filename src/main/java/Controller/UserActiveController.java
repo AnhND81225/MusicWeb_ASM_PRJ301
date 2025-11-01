@@ -40,7 +40,7 @@ public class UserActiveController extends HttpServlet {
     public void init() throws ServletException {
         factory = new Configuration().configure().buildSessionFactory();
 
-        commentService = new CommentService(new CommentDAO(factory));
+      // commentService = new CommentService(new CommentDAO(factory));
         historyService = new HistoryService(new HistoryDAO(factory));
         downloadService = new DownloadHistoryService(new DownloadHistoryDAO(factory));
         notificationService = new NotificationService(new NotificationDAO(factory));
@@ -64,9 +64,9 @@ public class UserActiveController extends HttpServlet {
             return;
         }
          switch (action) {
-            case "comment":
-                handleComment(request, response, currentUser);
-                break;
+//            case "comment":
+//                handleComment(request, response, currentUser);
+//                break;
             case "history":
                 handleHistory(request, response, currentUser);
                 break;
@@ -76,30 +76,30 @@ public class UserActiveController extends HttpServlet {
             case "notification":
                 handleNotification(request, response, currentUser);
                 break;
-            case "songLikes":
-                handleSongLikes(request, response, currentUser);
-                break;
+//            case "songLikes":
+//                handleSongLikes(request, response, currentUser);
+//                break;
             default:
                 response.sendRedirect("HomePage.jsp");
         }
     }
-    private void handleComment(HttpServletRequest request, HttpServletResponse response, UserDTO user)
-            throws ServletException, IOException {
-        String songIdStr = request.getParameter("songId");
-        String content = request.getParameter("content");
-
-        if (songIdStr != null && content != null) {
-            SongDTO song = new SongDTO();
-            song.setSongId(Integer.parseInt(songIdStr));
-
-            boolean success = commentService.addComment(content, user, song);
-            request.setAttribute("message", success ? "Bình luận thành công!" : "Thất bại khi bình luận.");
-        }
-
-        List<CommentDTO> comments = commentService.getCommentsByUser(user);
-        request.setAttribute("commentList", comments);
-        request.getRequestDispatcher("Comment.jsp").forward(request, response);
-    }
+//    private void handleComment(HttpServletRequest request, HttpServletResponse response, UserDTO user)
+//            throws ServletException, IOException {
+//        String songIdStr = request.getParameter("songId");
+//        String content = request.getParameter("content");
+//
+//        if (songIdStr != null && content != null) {
+//            SongDTO song = new SongDTO();
+//            song.setSongId(Integer.parseInt(songIdStr));
+//
+//            boolean success = commentService.addComment(content, user, song);
+//            request.setAttribute("message", success ? "Bình luận thành công!" : "Thất bại khi bình luận.");
+//        }
+//
+//        List<CommentDTO> comments = commentService.getCommentsByUser(user);
+//        request.setAttribute("commentList", comments);
+//        request.getRequestDispatcher("Comment.jsp").forward(request, response);
+//    }
     private void handleHistory(HttpServletRequest request, HttpServletResponse response, UserDTO user)
             throws ServletException, IOException {
         List<HistoryDTO> historyList = historyService.getHistoryByUser(user);
@@ -120,31 +120,31 @@ public class UserActiveController extends HttpServlet {
         request.getRequestDispatcher("Notification.jsp").forward(request, response);
     }
 
-    private void handleSongLikes(HttpServletRequest request, HttpServletResponse response, UserDTO user)
-            throws ServletException, IOException {
-        String songIdStr = request.getParameter("songId");
-        if (songIdStr != null) {
-            SongDTO song = new SongDTO();
-            song.setSongId(Integer.parseInt(songIdStr));
-
-            SongLikesDTO existingLike = songLikesService.getLikeByUserAndSong(user, song);
-            boolean success;
-
-            if (existingLike == null) {
-                // Chưa like → thêm mới
-                success = songLikesService.addLike(new SongLikesDTO(user, song));
-                request.setAttribute("message", success ? "Đã like bài hát!" : "Không thể like.");
-            } else {
-                // Đã like → xóa mềm
-                success = songLikesService.removeLike(existingLike);
-                request.setAttribute("message", success ? "Đã bỏ like!" : "Không thể bỏ like.");
-            }
-        }
-
-        List<SongLikesDTO> likes = songLikesService.getAllVisibleLikes();
-        request.setAttribute("likeList", likes);
-        request.getRequestDispatcher("SongLikes.jsp").forward(request, response);
-    }
+//    private void handleSongLikes(HttpServletRequest request, HttpServletResponse response, UserDTO user)
+//            throws ServletException, IOException {
+//        String songIdStr = request.getParameter("songId");
+//        if (songIdStr != null) {
+//            SongDTO song = new SongDTO();
+//            song.setSongId(Integer.parseInt(songIdStr));
+//
+//            SongLikesDTO existingLike = songLikesService.getLikeByUserAndSong(user, song);
+//            boolean success;
+//
+//            if (existingLike == null) {
+//                // Chưa like → thêm mới
+//                success = songLikesService.addLike(new SongLikesDTO(user, song));
+//                request.setAttribute("message", success ? "Đã like bài hát!" : "Không thể like.");
+//            } else {
+//                // Đã like → xóa mềm
+//                success = songLikesService.removeLike(existingLike);
+//                request.setAttribute("message", success ? "Đã bỏ like!" : "Không thể bỏ like.");
+//            }
+//        }
+//
+//        List<SongLikesDTO> likes = songLikesService.getAllVisibleLikes();
+//        request.setAttribute("likeList", likes);
+//        request.getRequestDispatcher("SongLikes.jsp").forward(request, response);
+//    }
 
     
 
