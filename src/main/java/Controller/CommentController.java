@@ -83,7 +83,7 @@ public class CommentController extends HttpServlet {
         // GỌI PHƯƠNG THỨC addComment MỚI
         boolean success = commentService.addComment(content, userId, songId, parentCommentId);
 
-        response.sendRedirect("song?action=details&id=" + songId);
+        response.sendRedirect("test-comment");
     }
 
     private void handleDeleteComment(HttpServletRequest request, HttpServletResponse response)
@@ -93,7 +93,7 @@ public class CommentController extends HttpServlet {
         int songId = commentService.deleteComment(commentId);
 
         if (songId != -1) {
-            response.sendRedirect("song?action=details&id=" + songId);
+           response.sendRedirect("test-comment");
         } else {
             response.sendError(HttpServletResponse.SC_FORBIDDEN, "Cannot delete this comment!");
         }

@@ -54,7 +54,7 @@ public class CommentTestController extends HttpServlet {
             request.setAttribute("currentSongId", testSongId); // Để JSP lấy ID bài hát
             
             // 5. Forward đến trang JSP để hiển thị
-            request.getRequestDispatcher("/song-details.jsp").forward(request, response);
+            request.getRequestDispatcher("/song-detail.jsp").forward(request, response);
             
         } catch (Exception e) {
             e.printStackTrace();

@@ -83,7 +83,7 @@ public class NotificationController extends HttpServlet {
         request.setAttribute("unreadCount", unreadCount);
 
         // Chuyển tiếp đến trang JSP hiển thị danh sách
-        request.getRequestDispatcher("/notification-list.jsp").forward(request, response);
+        request.getRequestDispatcher("/notification-test.jsp").forward(request, response);
     }
 
     

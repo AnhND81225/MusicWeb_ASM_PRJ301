@@ -19,6 +19,7 @@ public class CommentDAO {
 
     public int insert(CommentDTO x) {
         Transaction tx = null;
+        int kq=0;
         try (Session session = factory.openSession()) {
             tx = session.beginTransaction();
             session.save(x);
@@ -53,8 +54,13 @@ public class CommentDAO {
 
     public CommentDTO selectById(int id) {
         try (Session session = factory.openSession()) {
-            return session.get(CommentDTO.class, id);
-        }
+        // TẢI EAGERLY: Buộc Hibernate tải luôn UserDTO cùng CommentDTO
+        return session.createQuery(
+                "SELECT c FROM CommentDTO c JOIN FETCH c.user WHERE c.commentId = :id",
+                CommentDTO.class)
+                .setParameter("id", id)
+                .uniqueResult();
+    }
     }
 
     public List<CommentDTO> selectBySongId(int songId) {

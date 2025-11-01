@@ -22,33 +22,40 @@ public class CommentService {
     }
     
 
-    // BỔ SUNG HOẶC THAY THẾ PHƯƠNG THỨC addComment
-public boolean addComment(String content, int userId, int songId, Integer parentCommentId) {
+    public boolean addComment(String content, int userId, int songId, Integer parentCommentId) {
     
-    // [Giả định: Cần UserDTO và SongDTO có ID]
+    // Tạo DTO cho khóa ngoại chỉ với ID
     UserDTO user = new UserDTO();
     user.setUserID(userId);
     SongDTO song = new SongDTO();
-    song.setSongId(songId); // ID của bài hát liên quan
+    song.setSongId(songId); 
 
     CommentDTO comment = new CommentDTO(content.trim(), user, song);
     
     // 1. Xử lý Reply (Thông báo cho người viết comment cha)
     if (parentCommentId != null) {
-        CommentDTO parentComment = commentDAO.selectById(parentCommentId);
+        CommentDTO parentComment = commentDAO.selectById(parentCommentId); 
         
         if (parentComment != null) {
-            comment.setParentComment(parentComment);
             
-            // Lấy người nhận thông báo (Chủ của comment gốc)
-            UserDTO recipient = parentComment.getUser();
+            // ************ SỬA LỖI QUAN TRỌNG NHẤT ************
+            // TẠO DTO GIẢ CHỈ CÓ ID CHO PARENT COMMENT ĐỂ TRÁNH LỖI DETACHED
+            CommentDTO parentCommentRef = new CommentDTO();
+            parentCommentRef.setCommentId(parentCommentId);
+            comment.setParentComment(parentCommentRef);
+            // ***************************************************
+            
+            // Lấy ID người nhận (ĐÃ ĐƯỢC LOAD EAGERLY ở DAO)
+            int recipientId = parentComment.getUser().getUserID();
             
             // 2. Gửi thông báo nếu người trả lời không phải là chính người nhận
-            if (recipient != null && recipient.getUserID() != userId) { 
+            if (recipientId != userId) {
+                String message = "User " + userId + " đã trả lời bình luận của bạn."; 
                 
-                String message = "User " + userId + " đã trả lời bình luận của bạn."; // Nội dung thông báo
+                UserDTO recipient = new UserDTO();
+                recipient.setUserID(recipientId);
                 
-                // Tạo và thêm Notification
+                // Tạo và thêm Notification (Sẽ chạy Transaction riêng)
                 NotificationDTO notification = new NotificationDTO(message, recipient, song);
                 notificationService.addNotification(notification);
             }
@@ -56,8 +63,9 @@ public boolean addComment(String content, int userId, int songId, Integer parent
     }
     
     comment.setHidden(false);
-    // 3. Insert comment vào database
-    return commentDAO.insert(comment) == 1;
+    // 3. Insert comment vào database (Transaction riêng)
+    // Lệnh này giờ sẽ an toàn hơn vì nó không cố gắng lưu DTO Detached
+    return commentDAO.insert(comment) == 1; 
 }
 
     public int deleteComment(int commentId) {
